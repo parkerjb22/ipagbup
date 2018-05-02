@@ -14,7 +14,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="player in vm.stats">
-                    <td>{{ player.name }}</td>
+                    <td><a href="#/player/{{ player.name }}">{{ player.name }}</a></td>
                     <td>{{ player.rounds }}</td>
                     <td>{{ (player.rounds - player.deaths) }}</td>
                     <td>{{ ((player.rounds - player.deaths) / player.rounds) | number:3 }}</td>

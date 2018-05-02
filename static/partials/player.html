@@ -1,0 +1,46 @@
+<h3 class="bottom-buffer mt-2 text-center">{{ vm.player }}</h3>
+<div class="row">
+    <div class='col-sm-2'>
+        <h5>Matches Played</h5>
+        <div style="overflow: auto; width: 100%; height:500px">
+            <table class="table table-striped table-condensed">
+                <tbody>
+                    <tr ng-repeat="match in vm.matches track by $index" ng-click="vm.rowNumber = $index">
+                        <td>{{ match.date | date:"MM/dd/yyyy h:mma" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class='col-sm-10'>
+        <h5>Match Stats</h5>
+        <div ng-show="vm.rowNumber != -1">
+            <table class="table table-striped table-condensed">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div><strong>Kills</strong> {{ vm.matches[vm.rowNumber].stats.kills }}</div>
+                            <div><strong>DBNOs</strong> {{ vm.matches[vm.rowNumber].stats.DBNOs }}</div>
+                            <div><strong>Damage</strong> {{ vm.matches[vm.rowNumber].stats.damageDealt }}</div>
+                            <div><strong>Assists</strong> {{ vm.matches[vm.rowNumber].stats.assists }}</div>
+                        </td>
+                        <td>
+                            <div><strong>Heals</strong> {{ vm.matches[vm.rowNumber].stats.heals }}</div>
+                            <div><strong>Boosts</strong> {{ vm.matches[vm.rowNumber].stats.boosts }}</div>
+                            <div><strong>Revives</strong> {{ vm.matches[vm.rowNumber].stats.revives }}</div>
+                        </td>
+                        <td>
+                            <div><strong>Team Place</strong> {{ vm.matches[vm.rowNumber].stats.winPlace }}</div>
+                            <div><strong>Time Alive</strong> {{ vm.matches[vm.rowNumber].stats.timeSurvived | secondsToHHmmss  }}</div>
+                            <div><strong>Walk Distance</strong> {{ vm.matches[vm.rowNumber].stats.walkDistance | number:2 }}</div>
+                            <div><strong>Ride Distance</strong> {{ vm.matches[vm.rowNumber].stats.rideDistance | number:2 }}</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div ng-hide="vm.rowNumber != -1">
+            No Match Selected
+        </div>
+    </div>
+</div>

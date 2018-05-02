@@ -18,13 +18,13 @@ PLAYER_IDS = {
 
 
 def create_matches():
-    db = Base('db/matches.pdl', save_to_file=True)
+    db = Base('stats/db/matches.pdl', save_to_file=True)
     db.create('match_key', 'player_id', mode="open")
     return db
 
 
 def create_match_details():
-    db = Base('db/match_details.pdl', save_to_file=True)
+    db = Base('stats/db/match_details.pdl', save_to_file=True)
     db.create('match_key', 'json', mode="open")
     return db
 
@@ -81,6 +81,51 @@ def index():
 def get_stats():
     summary = summarize(match_details())
     return jsonify(summary)
+
+
+@app.route("/api/match/<match_id>")
+def get_single_match(match_id):
+    results = match_details('match_key') == match_id
+    if results:
+        for rec in results:
+            return jsonify(rec['json'])
+    else:
+        return []
+
+
+@app.route("/api/player/<player_name>")
+def get_player(player_name):
+    pid = PLAYER_IDS[player_name]
+    results = []
+    for rec in matches('player_id') == pid:
+        date = None
+        stats = None
+        for detail_rec in match_details('match_key') == rec['match_key']:
+            date = detail_rec['json']['data']['attributes']['createdAt']
+        if date:
+            for data in detail_rec['json']['included']:
+                if data['type'] == 'participant':
+                    player_id = data['attributes']['stats']['playerId'][8:]
+                    if player_id == PLAYER_IDS[player_name]:
+                        stats = data['attributes']['stats']
+            results.append({'key': rec['match_key'], 'date': date, 'stats': stats})
+
+    return jsonify(results)
+
+
+@app.route("/api/match/<match_id>/<player_name>")
+def get_player_match(match_id, player_name):
+    results = match_details('match_key') == match_id
+    if results:
+        for rec in results:
+            data_array = rec['json']['included']
+            for data in data_array:
+                if data['type'] == 'participant':
+                    player_id = data['attributes']['stats']['playerId'][8:]
+                    if player_id == PLAYER_IDS[player_name]:
+                        return jsonify(data['attributes']['stats'])
+    else:
+        return []
 
 
 if __name__ == '__main__':

@@ -13,12 +13,21 @@
             query: { method: 'GET', params: {}, isArray: true }
 	    })
 
+	    var playerResource = $resource('api/player/:name', {name: "@name"}, {
+			get: { method: 'GET', params: {}, isArray: false }
+	    })
+
         return {
             getStats: getStats,
+            getPlayerMatches: getPlayerMatches
         }
 
         function getStats() {
             return statsResource.query().$promise
+        }
+
+        function getPlayerMatches(name) {
+            return playerResource.query({name: name}).$promise
         }
 
     }

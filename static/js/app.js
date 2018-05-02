@@ -1,7 +1,7 @@
 (function(){
 	'use strict';   // See note about 'use strict'; below
 
-	var myApp = angular.module('myApp', ['ngRoute', 'ngResource', 'ui.router']);
+	var myApp = angular.module('myApp', ['ngResource', 'ui.router']);
 
 	myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
@@ -18,10 +18,18 @@
 				url:"/stats",
 				views: {
 					"@": { templateUrl: '../static/partials/stats.html', controller: 'StatsViewCtrl', controllerAs: "vm" },
-//					"rounds@bracket": { templateUrl: "../static/partials/_rounds.html"},
-//					"round5@bracket": { templateUrl: "../static/partials/_round5.html"},
-//					"round6@bracket": { templateUrl: "../static/partials/_round6.html"},
-//					"playerKey@bracket": { templateUrl: "../static/partials/_player_key.html"}
+				}
+	        })
+			.state('stats2', {
+				url:"/stats/:playerId",
+				views: {
+					"@": { templateUrl: '../static/partials/stats.html', controller: 'StatsViewCtrl', controllerAs: "vm" },
+				}
+	        })
+			.state('player/', {
+				url:"/player/:playerName",
+				views: {
+					"@": { templateUrl: '../static/partials/player.html', controller: 'PlayerViewCtrl', controllerAs: "vm" },
 				}
 			});
 	    }]);
