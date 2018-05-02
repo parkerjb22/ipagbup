@@ -5,7 +5,7 @@
 
 	myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
-		$urlRouterProvider.otherwise('/bracket');
+		$urlRouterProvider.otherwise('/stats');
 
 		$stateProvider
 			.state('index', {
@@ -14,8 +14,8 @@
 	            '@' : { templateUrl: '../static/partials/layout.html' }
 	          }
 	        })
-			.state('bracket', {
-				url:"/bracket",
+			.state('stats', {
+				url:"/stats",
 				views: {
 					"@": { templateUrl: '../static/partials/stats.html', controller: 'StatsViewCtrl', controllerAs: "vm" },
 //					"rounds@bracket": { templateUrl: "../static/partials/_rounds.html"},

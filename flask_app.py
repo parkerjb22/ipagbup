@@ -29,6 +29,10 @@ def create_match_details():
     return db
 
 
+matches = create_matches()
+match_details = create_match_details()
+
+
 def summarize(details):
     summary = []
     for rec in details:
@@ -67,6 +71,7 @@ def summarize(details):
                         })
     return summary
 
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -79,7 +84,4 @@ def get_stats():
 
 
 if __name__ == '__main__':
-    matches = create_matches()
-    match_details = create_match_details()
-
     app.run(host='0.0.0.0', port=5050)
