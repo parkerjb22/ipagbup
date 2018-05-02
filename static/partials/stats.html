@@ -1,0 +1,28 @@
+<div class="row">
+    <div class='col-sm-12'>
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Games</th>
+                    <th>Wins</th>
+                    <th>Win %</th>
+                    <th>Kills/Deaths</th>
+                    <th>KDR</th>
+                    <th>DBNO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="player in vm.stats">
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.rounds }}</td>
+                    <td>{{ (player.rounds - player.deaths) }}</td>
+                    <td>{{ ((player.rounds - player.deaths) / player.rounds) | number:3 }}</td>
+                    <td>{{ player.kills }}/{{ player.deaths }}</td>
+                    <td>{{ (player.kills / player.deaths) | number:3 }}</td>
+                    <td>{{ player.dbno }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
