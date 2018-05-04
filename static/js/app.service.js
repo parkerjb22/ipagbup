@@ -23,8 +23,8 @@
             getPlayerMatches: getPlayerMatches,
         }
 
-        function getStats() {
-            return statsResource.query().$promise
+        function getStats(type) {
+            return statsResource.query({type: type}).$promise
         }
 
         function getPlayerStats(name){

@@ -48,6 +48,7 @@
                                 <div><strong>Kills</strong> {{ stats.kills }}</div>
                                 <div><strong>DBNOs</strong> {{ stats.DBNOs }}</div>
                                 <div><strong>Damage</strong> {{ stats.damageDealt | number:2 }}</div>
+                                <div><strong>Headshots</strong> {{ stats.headshotKills }}</div>
                             </td>
                             <td>
                                 <div><strong>Heals</strong> {{ stats.heals }}</div>
@@ -60,6 +61,7 @@
                                 <div><strong>Time Alive</strong> {{ stats.timeSurvived | secondsToHHmmss  }}</div>
                                 <div><strong>Walk Distance</strong> {{ stats.walkDistance | number:2 }}</div>
                                 <div><strong>Ride Distance</strong> {{ stats.rideDistance | number:2 }}</div>
+                                <div><strong>Longest Kill</strong> {{ stats.longestKill | number }}</div>
                             </td>
                         </tr>
                     </tbody>

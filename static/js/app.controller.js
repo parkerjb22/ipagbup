@@ -8,10 +8,27 @@
 
     function StatsViewCtrl($stateParams, $interval, StatsService) {
         var vm = this
+        vm.getStats = getStats
+
+        vm.types = ['All', 'Squad', 'Duo', 'Solo']
+
         activate();
 
         function activate() {
             StatsService.getStats().then(function(stats){
+                vm.stats = stats
+            })
+        }
+
+        function getStats(type){
+
+            if (type == 'All') {
+                type = null
+            } else {
+                type = type.toLowerCase()
+            }
+
+            StatsService.getStats(type).then(function(stats){
                 vm.stats = stats
             })
         }

@@ -33,9 +33,11 @@ matches = create_matches()
 match_details = create_match_details()
 
 
-def summarize(details, player_name=None):
+def summarize(details, player_name=None, game_type=None):
     summary = []
     for rec in details:
+        if game_type is not None and rec['json']['data']['attributes']['gameMode'] != game_type:
+            continue
         data_array = rec['json']['included']
         for data in data_array:
             if data['type'] == 'participant':
@@ -84,13 +86,15 @@ def index():
 
 @app.route("/api/stats")
 def get_stats():
-    summary = summarize(match_details())
+    game_type = request.args.get('type')
+    summary = summarize(match_details(), game_type=game_type)
     return jsonify(summary)
 
 
 @app.route("/api/stats/<player_name>")
 def get_player_stats(player_name):
-    summary = summarize(match_details(), player_name=player_name)
+    game_type = request.args.get('type')
+    summary = summarize(match_details(), player_name=player_name, game_type=game_type)
     return jsonify(summary[0])
 
 
