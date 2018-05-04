@@ -153,7 +153,7 @@ def insert_match():
         return json.dumps({'success': False}), 409, {'ContentType': 'application/json'}
 
     matches.insert(match_key=m, player_id=pid)
-    # matches.commit()
+    matches.commit()
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
@@ -172,7 +172,7 @@ def insert_match_details():
         return json.dumps({'success': False}), 409, {'ContentType': 'application/json'}
 
     match_details.insert(match_key=m, json=json_data)
-    # match_details.commit()
+    match_details.commit()
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
