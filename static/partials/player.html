@@ -5,7 +5,7 @@
         <div style="overflow: auto; width: 100%; height:500px">
             <table class="table table-striped table-condensed">
                 <tbody>
-                    <tr ng-repeat="match in vm.matches | orderBy:'-date' track by $index" ng-click="vm.rowNumber = $index">
+                    <tr ng-repeat="match in vm.matches | orderBy:'-date'" ng-click="vm.rowNumber = match.index">
                         <td>{{ match.date | date:"MM/dd/yyyy h:mma" }}</td>
                     </tr>
                 </tbody>

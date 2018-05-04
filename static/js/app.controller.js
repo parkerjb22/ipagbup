@@ -37,6 +37,9 @@
         function activate() {
             StatsService.getPlayerMatches(vm.playerName).then(function(matches){
                 vm.matches = matches
+                for (var i=0; i<vm.matches.length; i++) {
+                  vm.matches[i].index = i
+                }
             })
 
             StatsService.getPlayerStats(vm.playerName).then(function(player){
