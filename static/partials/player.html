@@ -1,4 +1,4 @@
-<h3 class="bottom-buffer mt-2 text-center">{{ vm.player }}</h3>
+<h3 class="bottom-buffer mt-2 text-center">{{ vm.playerName }}</h3>
 <div class="row">
     <div class='col-sm-2'>
         <h5>Matches Played</h5>
@@ -13,34 +13,58 @@
         </div>
     </div>
     <div class='col-sm-10'>
-        <h5>Match Stats</h5>
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Games</th>
+                    <th>Wins</th>
+                    <th>Win %</th>
+                    <th>Kills/Deaths</th>
+                    <th>KDR</th>
+                    <th>Avg Dmg</th>
+                    <th>DBNO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ vm.player.rounds }}</td>
+                    <td>{{ (vm.player.rounds - vm.player.deaths) }}</td>
+                    <td>{{ ((vm.player.rounds - vm.player.deaths) / vm.player.rounds * 100) | number:2 }}</td>
+                    <td>{{ vm.player.kills }}/{{ vm.player.deaths }}</td>
+                    <td>{{ (vm.player.kills / vm.player.deaths) | number:3 }}</td>
+                    <td>{{ (vm.player.dmg / vm.player.rounds) | number: 2 }}</td>
+                    <td>{{ vm.player.dbno }}</td>
+                </tr>
+            </tbody>
+        </table>
         <div ng-show="vm.rowNumber != -1">
-            <table class="table table-striped table-condensed">
-                <tbody>
-                    <tr>
-                        <td>
-                            <div><strong>Kills</strong> {{ vm.matches[vm.rowNumber].stats.kills }}</div>
-                            <div><strong>DBNOs</strong> {{ vm.matches[vm.rowNumber].stats.DBNOs }}</div>
-                            <div><strong>Damage</strong> {{ vm.matches[vm.rowNumber].stats.damageDealt }}</div>
-                            <div><strong>Assists</strong> {{ vm.matches[vm.rowNumber].stats.assists }}</div>
-                        </td>
-                        <td>
-                            <div><strong>Heals</strong> {{ vm.matches[vm.rowNumber].stats.heals }}</div>
-                            <div><strong>Boosts</strong> {{ vm.matches[vm.rowNumber].stats.boosts }}</div>
-                            <div><strong>Revives</strong> {{ vm.matches[vm.rowNumber].stats.revives }}</div>
-                        </td>
-                        <td>
-                            <div><strong>Team Place</strong> {{ vm.matches[vm.rowNumber].stats.winPlace }}</div>
-                            <div><strong>Time Alive</strong> {{ vm.matches[vm.rowNumber].stats.timeSurvived | secondsToHHmmss  }}</div>
-                            <div><strong>Walk Distance</strong> {{ vm.matches[vm.rowNumber].stats.walkDistance | number:2 }}</div>
-                            <div><strong>Ride Distance</strong> {{ vm.matches[vm.rowNumber].stats.rideDistance | number:2 }}</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div ng-hide="vm.rowNumber != -1">
-            No Match Selected
+            <div class="bottom-buffer">{{ vm.matches[vm.rowNumber].date | date:"MM/dd/yyyy h:mma" }}<span class="glyphicon glyphicon-remove"></span></div>
+            <div ng-repeat="stats in vm.matches[vm.rowNumber].stats | orderBy:'name'">
+                <table class="table table-striped table-condensed">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div><strong>{{ stats.name }}</strong></div>
+                                <div><strong>Kills</strong> {{ stats.kills }}</div>
+                                <div><strong>DBNOs</strong> {{ stats.DBNOs }}</div>
+                                <div><strong>Damage</strong> {{ stats.damageDealt | number:2 }}</div>
+                            </td>
+                            <td>
+                                <div><strong>Heals</strong> {{ stats.heals }}</div>
+                                <div><strong>Boosts</strong> {{ stats.boosts }}</div>
+                                <div><strong>Revives</strong> {{ stats.revives }}</div>
+                                <div><strong>Assists</strong> {{ stats.assists }}</div>
+                            </td>
+                            <td>
+                                <div><strong>Team Place</strong> {{ stats.winPlace }}</div>
+                                <div><strong>Time Alive</strong> {{ stats.timeSurvived | secondsToHHmmss  }}</div>
+                                <div><strong>Walk Distance</strong> {{ stats.walkDistance | number:2 }}</div>
+                                <div><strong>Ride Distance</strong> {{ stats.rideDistance | number:2 }}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -9,6 +9,7 @@
                     <th>Win %</th>
                     <th>Kills/Deaths</th>
                     <th>KDR</th>
+                    <th>Avg Dmg</th>
                     <th>DBNO</th>
                 </tr>
             </thead>
@@ -17,9 +18,10 @@
                     <td><a href="#/player/{{ player.name }}">{{ player.name }}</a></td>
                     <td>{{ player.rounds }}</td>
                     <td>{{ (player.rounds - player.deaths) }}</td>
-                    <td>{{ ((player.rounds - player.deaths) / player.rounds) | number:3 }}</td>
+                    <td>{{ ((player.rounds - player.deaths) / player.rounds * 100) | number:2 }}</td>
                     <td>{{ player.kills }}/{{ player.deaths }}</td>
                     <td>{{ (player.kills / player.deaths) | number:3 }}</td>
+                    <td>{{ (player.dmg / player.rounds) | number: 2 }}</td>
                     <td>{{ player.dbno }}</td>
                 </tr>
             </tbody>

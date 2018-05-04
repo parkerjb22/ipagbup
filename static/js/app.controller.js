@@ -30,13 +30,17 @@
 
     function PlayerViewCtrl($stateParams, $interval, StatsService) {
         var vm = this
-        vm.player = $stateParams.playerName
+        vm.playerName = $stateParams.playerName
         vm.rowNumber = -1
         activate();
 
         function activate() {
-            StatsService.getPlayerMatches(vm.player).then(function(matches){
+            StatsService.getPlayerMatches(vm.playerName).then(function(matches){
                 vm.matches = matches
+            })
+
+            StatsService.getPlayerStats(vm.playerName).then(function(player){
+                vm.player = player
             })
         }
     }
