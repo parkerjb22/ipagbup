@@ -30,7 +30,7 @@ def create_match_details():
 
 
 def create_seasons():
-    db = Base('db/seasons.pdl', save_to_file=True)
+    db = Base('stats/db/seasons.pdl', save_to_file=True)
     db.create('player_id', 'season_id', 'json', mode="open")
     return db
 
