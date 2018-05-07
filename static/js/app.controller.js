@@ -49,6 +49,7 @@
         var vm = this
         vm.playerName = $stateParams.playerName
         vm.rowNumber = -1
+        vm.sortType = '-date'
         activate();
 
         function activate() {

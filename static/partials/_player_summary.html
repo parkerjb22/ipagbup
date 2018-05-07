@@ -1,0 +1,163 @@
+<div class="row">
+    <div class='col-sm-8 offset-2'>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-s-12">
+                        <div style="padding-left: 6px;">
+                            <h4 class="matches-detail__title">Combat</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ vm.player.rounds }}</div>
+                                <div style="font-size: 12px; color: #696969">Games Played</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ vm.player.rounds - vm.player.deaths }}</div>
+                                <div style="font-size: 12px; color: #696969">Wins</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ vm.player.kills }} ({{ vm.player.headshotKills }})</div>
+                                <div style="font-size: 12px; color: #696969">Kills (Headshots)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ (vm.player.kills / vm.player.deaths) | number:2 }}</div>
+                                <div style="font-size: 12px; color: #696969">KDR</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 14px; line-height: 16px;">{{ (vm.player.dmg / vm.player.rounds) | number: 2 }}</div>
+                                <div style="font-size: 12px; color: #696969">Avg Dmg</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 14px; line-height: 16px">{{ vm.player.assists }}</div>
+                                <div style="font-size: 12px; color: #696969">Assists</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 14px; line-height: 16px;">{{ vm.player.dbno }}</div>
+                                <div style="font-size: 12px; color: #696969">DBNO</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-3">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 14px; line-height: 16px">{{ vm.player.longestKill }}</div>
+                                <div style="font-size: 12px; color: #696969">Longest Kill</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="row">
+                    <div class="col-s-12">
+                        <div style="padding-left: 6px;">
+                            <h4 class="matches-detail__title">Distance</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-s-12">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 250px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ ((vm.player.walkDistance + vm.player.rideDistance) / vm.player.rounds / 1000) | number:2 }}
+                                    km
+                                </div>
+                                <div style="font-size: 12px; color: #696969">Avg. Distance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-s-6">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 14px; line-height: 16px;">{{ (vm.player.walkDistance / vm.player.rounds / 1000) | number:2 }}
+                                    km
+                                </div>
+                                <div style="font-size: 12px; color: #696969">Walk Distance</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-6">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 14px; line-height: 16px;">{{ (vm.player.rideDistance / vm.player.rounds / 1000) | number:2 }}
+                                    km
+                                </div>
+                                <div style="font-size: 12px; color: #696969">Ride Distance</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="row">
+                    <div class="col-s-12">
+                        <div style="padding-left: 6px;">
+                            <h4 class="matches-detail__title">Survival</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-s-6">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 18px; line-height: 22px;">{{ vm.player.heals }} / {{ vm.player.boosts }}</div>
+                                <div style="font-size: 12px; color: #696969">Heals / Boosts</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-s-6">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 122px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 18px; line-height: 22px;">{{ vm.player.revives }}</div>
+                                <div style="font-size: 12px; color: #696969">Revives</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-s-12">
+                        <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 250px">
+                            <div style="padding: 8px 12px;">
+                                <div style="font-size: 14px; line-height: 16px;">{{ (vm.player.timeSurvived/vm.player.rounds) | number:0 | secondsToHHmmss }}</div>
+                                <div style="font-size: 12px; color: #696969">Avg Survival Time</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
