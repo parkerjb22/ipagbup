@@ -170,13 +170,30 @@
                 <thead>
                     <tr>
                         <th>Date
-                            <i ng-hide="vm.sortType == '-date'" class="fas fa-angle-up" ng-click="vm.sortType = '-date'"></i>
-                            <i ng-show="vm.sortType == '-date'" class="fas fa-angle-down" ng-click="vm.sortType ='date'"></i>
+                            <i ng-show="vm.sortType == 'date'" class="fas fa-sort-up" ng-click="vm.sortType = '-date'"></i>
+                            <i ng-show="vm.sortType == '-date'" class="fas fa-sort-down" ng-click="vm.sortType ='date'"></i>
+                            <i ng-hide="(vm.sortType == '-date' || vm.sortType == 'date')" class="fas fa-sort" ng-click="vm.sortType ='-date'"></i>
                         </th>
-                        <th>Place</th>
-                        <th>Kills</th>
-                        <th>Damage</th>
-                        <th>Distance</th>
+                        <th>Place
+                            <i ng-show="vm.sortType == '-winPlace'" class="fas fa-sort-up" ng-click="vm.sortType = 'winPlace'"></i>
+                            <i ng-show="vm.sortType == 'winPlace'" class="fas fa-sort-down" ng-click="vm.sortType = '-winPlace'"></i>
+                            <i ng-hide="(vm.sortType == '-winPlace' || vm.sortType == 'winPlace')" class="fas fa-sort" ng-click="vm.sortType = 'winPlace'"></i>
+                        </th>
+                        <th style="padding-left: 4px;">Kills
+                            <i ng-show="vm.sortType == 'kills'" class="fas fa-sort-up" ng-click="vm.sortType = '-kills'"></i>
+                            <i ng-show="vm.sortType == '-kills'" class="fas fa-sort-down" ng-click="vm.sortType ='kills'"></i>
+                            <i ng-hide="(vm.sortType == '-kills' || vm.sortType == 'kills')" class="fas fa-sort" ng-click="vm.sortType ='-kills'"></i>
+                        </th>
+                        <th style="padding-left: 4px;">Dmg
+                            <i ng-show="vm.sortType == 'damageDealt'" class="fas fa-sort-up" ng-click="vm.sortType = '-damageDealt'"></i>
+                            <i ng-show="vm.sortType == '-damageDealt'" class="fas fa-sort-down" ng-click="vm.sortType ='damageDealt'"></i>
+                            <i ng-hide="(vm.sortType == '-damageDealt' || vm.sortType == 'damageDealt')" class="fas fa-sort" ng-click="vm.sortType ='-damageDealt'"></i>
+                        </th>
+                        <th style="padding-left: 4px;">Dist
+                            <i ng-show="vm.sortType == 'dist'" class="fas fa-sort-up" ng-click="vm.sortType = '-dist'"></i>
+                            <i ng-show="vm.sortType == '-dist'" class="fas fa-sort-down" ng-click="vm.sortType ='dist'"></i>
+                            <i ng-hide="(vm.sortType == '-dist' || vm.sortType == 'dist')" class="fas fa-sort" ng-click="vm.sortType ='-dist'"></i>
+                        </th>
                         <th>Team</th>
                     </tr>
                 </thead>
@@ -192,7 +209,7 @@
                                 <span style="font-size: 24px;font-weight: 700;">#{{ match.stats[vm.playerName].winPlace }}</span>/{{ match.teamCount }}
                             </div>
                         </td>
-                        <td style="width: 64px;padding-left: 4px;">
+                        <td style="width: 70px;padding-left: 4px;">
                             <div style="font-size: 16px;color: #2b2e28;">{{ match.stats[vm.playerName].kills }}</div>
                             <div style="font-size: 12px;color: #696969;">Kills</div>
                         </td>

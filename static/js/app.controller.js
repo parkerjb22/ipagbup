@@ -57,6 +57,11 @@
                 vm.matches = matches
                 for (var i=0; i<vm.matches.length; i++) {
                   vm.matches[i].index = i
+                  vm.matches[i].winPlace = vm.matches[i].stats[vm.playerName].winPlace
+                  vm.matches[i].kills = vm.matches[i].stats[vm.playerName].kills
+                  vm.matches[i].damageDealt = vm.matches[i].stats[vm.playerName].damageDealt
+                  vm.matches[i].dist = vm.matches[i].stats[vm.playerName].rideDistance +
+                    vm.matches[i].stats[vm.playerName].walkDistance
                 }
             })
 
