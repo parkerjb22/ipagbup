@@ -29,8 +29,15 @@ def create_match_details():
     return db
 
 
+def create_seasons():
+    db = Base('db/seasons.pdl', save_to_file=True)
+    db.create('player_id', 'season_id', 'json', mode="open")
+    return db
+
+
 matches = create_matches()
 match_details = create_match_details()
+seasons = create_seasons()
 
 
 def summarize(details, player_name=None, game_type=None):
@@ -54,6 +61,14 @@ def summarize(details, player_name=None, game_type=None):
                 survive = data['attributes']['stats']['timeSurvived']
                 dbno = data['attributes']['stats']['DBNOs']
                 revives = data['attributes']['stats']['revives']
+                headshotKills = data['attributes']['stats']['headshotKills']
+                assists = data['attributes']['stats']['assists']
+                rideDistance = data['attributes']['stats']['rideDistance']
+                walkDistance = data['attributes']['stats']['walkDistance']
+                heals = data['attributes']['stats']['heals']
+                boosts = data['attributes']['stats']['boosts']
+                timeSurvived = data['attributes']['stats']['timeSurvived']
+                longestKill = data['attributes']['stats']['longestKill']
                 deaths = 0 if data['attributes']['stats']['deathType'] == 'alive' else 1
                 p = next((item for item in summary if item["name"] == name), None)
                 if p:
@@ -64,6 +79,15 @@ def summarize(details, player_name=None, game_type=None):
                     p['survive'] = p['survive'] + survive
                     p['dbno'] = p['dbno'] + dbno
                     p['revives'] = p['revives'] + revives
+                    p['headshotKills'] = p['headshotKills'] + headshotKills
+                    p['assists'] = p['assists'] + assists
+                    p['rideDistance'] = p['rideDistance'] + rideDistance
+                    p['walkDistance'] = p['walkDistance'] + walkDistance
+                    p['heals'] = p['heals'] + heals
+                    p['boosts'] = p['boosts'] + boosts
+                    p['timeSurvived'] = p['timeSurvived'] + timeSurvived
+                    if longestKill > p['longestKill']:
+                        p['longestKill'] = longestKill
 
                 else:
                     summary.append({
@@ -74,7 +98,15 @@ def summarize(details, player_name=None, game_type=None):
                         'dmg': dmg,
                         'survive': survive,
                         'dbno': dbno,
-                        'revives': revives
+                        'revives': revives,
+                        'headshotKills': headshotKills,
+                        'assists': assists,
+                        'rideDistance': rideDistance,
+                        'walkDistance': walkDistance,
+                        'heals': heals,
+                        'boosts': boosts,
+                        'timeSurvived': timeSurvived,
+                        'longestKill': longestKill
                     })
     return summary
 
@@ -114,16 +146,38 @@ def get_player(player_name):
     results = []
     for rec in matches('player_id') == pid:
         date = None
-        stats = []
+        stats = {}
+        team_count = 0
         for detail_rec in match_details('match_key') == rec['match_key']:
             date = detail_rec['json']['data']['attributes']['createdAt']
+            gameMode = detail_rec['json']['data']['attributes']['gameMode']
         if date:
             for data in detail_rec['json']['included']:
                 if data['type'] == 'participant':
                     player_id = data['attributes']['stats']['playerId'][8:]
                     if player_id in PLAYER_IDS.values():
-                        stats.append(data['attributes']['stats'])
-            results.append({'key': rec['match_key'], 'date': date, 'stats': stats})
+                        stats[data['attributes']['stats']['name']] = data['attributes']['stats']
+                elif data['type'] == 'roster':
+                    team_count += 1
+            results.append(
+                {
+                    'key': rec['match_key'],
+                    'date': date,
+                    'stats': stats,
+                    'teamCount': team_count,
+                    'gameMode': gameMode
+                }
+            )
+
+    return jsonify(results)
+
+
+@app.route("/api/season/<player_name>")
+def get_season_stats(player_name):
+    p = PLAYER_IDS[player_name]
+    results = []
+    for rec in seasons('player_id') == p:
+        results.append({'season_id': rec['season_id'], 'data': rec['json']})
 
     return jsonify(results)
 
@@ -177,6 +231,27 @@ def insert_match_details():
 
     match_details.insert(match_key=m, json=json_data)
     match_details.commit()
+
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/api/seasons", methods=['POST'])
+def insert_season():
+    data = request.get_json()
+
+    if 'season_id' not in data or 'player_id' not in data or 'data' not in data:
+        return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+
+    season_id = data['season_id']
+    player_id = data['player_id']
+    json_data = data['data']
+
+    rec = seasons(player_id=player_id, season_id=season_id)
+    if rec:
+        seasons.update(rec, json=json_data)
+    else:
+        seasons.insert(player_id=player_id, season_id=season_id, json=json_data)
+    seasons.commit()
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
