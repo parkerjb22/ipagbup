@@ -35,29 +35,38 @@ WEAPON_MAP = {
     'WeapDP28_C': 'DP',
     'WeapM9_C': 'M9',
     'WeapM1911_C': 'M1911',
+    'Buggy_A_03_C': 'Buggy',
+    'Dacia_A_02_v2_C': 'Dacia',
+    'ProjGrenade_C': 'Grenade',
+    'WeapKar98k_C': 'Kar 98k',
+    'WeapSKS_C': 'SKS',
+    'WeapThompson_C': 'Thompson',
+    'WeapUZI_C': 'Micro Uzi'
 }
+
+DB_DIR = 'stats/db/'
 
 
 def create_matches():
-    db = Base('stats/db/matches.pdl', save_to_file=True)
+    db = Base(DB_DIR + 'matches.pdl', save_to_file=True)
     db.create('match_key', 'player_id', mode="open")
     return db
 
 
 def create_match_details():
-    db = Base('stats/db/match_details.pdl', save_to_file=True)
+    db = Base(DB_DIR + 'match_details.pdl', save_to_file=True)
     db.create('match_key', 'json', mode="open")
     return db
 
 
 def create_seasons():
-    db = Base('stats/db/seasons.pdl', save_to_file=True)
+    db = Base(DB_DIR + 'seasons.pdl', save_to_file=True)
     db.create('player_id', 'season_id', 'json', mode="open")
     return db
 
 
 def create_telemetry():
-    db = Base('stats/db/telemetry.pdl', save_to_file=True)
+    db = Base(DB_DIR + 'telemetry.pdl', save_to_file=True)
     db.create('match_key', 'json', mode="open")
     return db
 
@@ -278,14 +287,10 @@ def insert_match_telemetry():
     m = data['match_key']
     json_data = data['data']
 
-    existing = telemetry(match_key=m)
-    if existing:
-        for rec in existing:
-            existing_json = rec['json']
-            existing_json.append(json_data)
-            telemetry.update(existing, json=existing_json)
-    else:
-        telemetry.insert(match_key=m, json=json_data)
+    if telemetry(match_key=m):
+        return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+
+    telemetry.insert(match_key=m, json=json_data)
     telemetry.commit()
 
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
@@ -435,7 +440,6 @@ def get_kills(match_key, player_name):
     kills = []
     date = None
     for detail_rec in match_details(match_key=match_key):
-        print(detail_rec['json']['data']['attributes']['createdAt'])
         date = datetime.strptime(detail_rec['json']['data']['attributes']['createdAt'], '%Y-%m-%dT%H:%M:%SZ')
     for event in data:
         killer = event['Killer']['Name']
