@@ -1,6 +1,8 @@
 from pydblite.pydblite import Base
 from flask import Flask, render_template, jsonify, request, abort
 import json
+import sys
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -14,6 +16,25 @@ PLAYER_IDS = {
     ALEX: "e281626d08ee461fb6edbc7477e188c3",
     JASON: "00712b32939442e6a6b8b118e006d099",
     DAN: "9606b28ee9cc4354befc293713d3d8c0",
+}
+
+PLAYER_NAMES = {}
+for k, v in PLAYER_IDS.items():
+    PLAYER_NAMES[v] = k
+
+WEAPON_MAP = {
+    'PlayerMale_A_C': 'Melee',
+    'PlayerFemale_A_C': 'Melee',
+    'WeapSCAR-L_C': 'SCAR',
+    'WeapHK416_C': 'M4',
+    'WeapAK47_C': 'AK47',
+    'WeapVSS_C': 'VSS',
+    'WeapM16A4_C': 'M16',
+    'WeapUMP_C': 'UMP',
+    'WeapBerreta686_C': 'S686',
+    'WeapDP28_C': 'DP',
+    'WeapM9_C': 'M9',
+    'WeapM1911_C': 'M1911',
 }
 
 
@@ -35,9 +56,16 @@ def create_seasons():
     return db
 
 
+def create_telemetry():
+    db = Base('stats/db/telemetry.pdl', save_to_file=True)
+    db.create('match_key', 'json', mode="open")
+    return db
+
+
 matches = create_matches()
 match_details = create_match_details()
 seasons = create_seasons()
+telemetry = create_telemetry()
 
 
 def summarize(details, player_name=None, game_type=None):
@@ -137,7 +165,7 @@ def get_single_match(match_id):
         for rec in results:
             return jsonify(rec['json'])
     else:
-        return []
+        return jsonify([])
 
 
 @app.route("/api/player/<player_name>")
@@ -150,13 +178,18 @@ def get_player(player_name):
         team_count = 0
         for detail_rec in match_details('match_key') == rec['match_key']:
             date = detail_rec['json']['data']['attributes']['createdAt']
-            gameMode = detail_rec['json']['data']['attributes']['gameMode']
+            game_mode = detail_rec['json']['data']['attributes']['gameMode']
         if date:
             for data in detail_rec['json']['included']:
                 if data['type'] == 'participant':
                     player_id = data['attributes']['stats']['playerId'][8:]
                     if player_id in PLAYER_IDS.values():
-                        stats[data['attributes']['stats']['name']] = data['attributes']['stats']
+                        kills = []
+                        if telemetry(match_key=rec['match_key']):
+                            kills = get_kills(rec['match_key'], PLAYER_NAMES[player_id])
+                        player_stats = data['attributes']['stats']
+                        player_stats['kill_details'] = kills
+                        stats[data['attributes']['stats']['name']] = player_stats
                 elif data['type'] == 'roster':
                     team_count += 1
             results.append(
@@ -165,7 +198,7 @@ def get_player(player_name):
                     'date': date,
                     'stats': stats,
                     'teamCount': team_count,
-                    'gameMode': gameMode
+                    'gameMode': game_mode
                 }
             )
 
@@ -194,7 +227,7 @@ def get_player_match(match_id, player_name):
                     if player_id == PLAYER_IDS[player_name]:
                         return jsonify(data['attributes']['stats'])
     else:
-        return []
+        return jsonify([])
 
 
 @app.route("/api/match", methods=['POST'])
@@ -235,6 +268,29 @@ def insert_match_details():
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
+@app.route("/api/telemetry", methods=['POST'])
+def insert_match_telemetry():
+    data = request.get_json()
+
+    if 'match_key' not in data or 'data' not in data:
+        return json.dumps({'success': False}), 400, {'ContentType': 'application/json'}
+
+    m = data['match_key']
+    json_data = data['data']
+
+    existing = telemetry(match_key=m)
+    if existing:
+        for rec in existing:
+            existing_json = rec['json']
+            existing_json.append(json_data)
+            telemetry.update(existing, json=existing_json)
+    else:
+        telemetry.insert(match_key=m, json=json_data)
+    telemetry.commit()
+
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+
 @app.route("/api/seasons", methods=['POST'])
 def insert_season():
     data = request.get_json()
@@ -265,6 +321,68 @@ def get_all_matches():
     return jsonify(result)
 
 
+@app.route("/api/all_telemetry")
+def get_all_telemetry():
+    result = []
+    for rec in telemetry():
+        result.append(rec['match_key'])
+
+    return jsonify(result)
+
+
+@app.route("/api/telemetry/<match_key>/events")
+def get_telemetry_events(match_key):
+    result = set()
+    for rec in telemetry(match_key=match_key):
+        for data in rec['json']:
+            result.add(data['_T'])
+
+    return jsonify(list(result))
+
+
+@app.route("/api/telemetry/<match_key>/<num_results>")
+def get_telemetry(match_key, num_results):
+    event_type = request.args.get('type')
+    page_parm = request.args.get('page')
+    player_name = request.args.get('player')
+    page = 0 if page_parm is None else int(page_parm)
+    result = get_match_telemetry(match_key, int(num_results), event_type, page, player_name)
+    return jsonify(result)
+
+
+def get_match_telemetry(match_key, num_results=sys.maxsize, event_type=None, page=0, player_name=None):
+    result = []
+    skip_to = num_results * page
+    row_count = 0
+    for rec in telemetry(match_key=match_key):
+        for data in rec['json']:
+            if not event_match(player_name, event_type, data):
+                continue
+            row_count += 1
+            if row_count <= skip_to:
+                continue
+            if len(result) < int(num_results):
+                result.append(data)
+            else:
+                break
+
+    return result
+
+
+def event_match(player_name, event_type, data):
+    data_type = data['_T']
+    if event_type and data_type != event_type:
+        return False
+    elif player_name:
+        if data_type == 'LogPlayerAttack' and data['Attacker']['Name'] != player_name:
+            return False
+        elif data_type == 'LogPlayerPosition' and data['Character']['Name'] != player_name:
+            return False
+        elif data_type == 'LogPlayerTakeDamage' and data['Attacker']['Name'] != player_name:
+            return False
+    return True
+
+
 @app.route("/api/all_details")
 def get_all_details():
     result = []
@@ -272,6 +390,49 @@ def get_all_details():
         result.append(rec['match_key'])
 
     return jsonify({'count': len(result), 'matches': result})
+
+
+@app.route("/api/match/dmg/<match_key>/<player_name>")
+def get_damage_by_player(match_key, player_name):
+    data = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerTakeDamage')
+    total = 0
+    weapons = {}
+    for event in data:
+        damage = event['Damage']
+        weapon = event['DamageCauserName']
+        total += damage
+        if weapon in weapons:
+            weapons[weapon] += damage
+        else:
+            weapons[weapon] = damage
+
+    return jsonify({'total_dmg': total, 'weapons': weapons})
+
+
+@app.route("/api/match/kills/<match_key>/<player_name>")
+def get_kills_by_player(match_key, player_name):
+    kills = get_kills(match_key, player_name)
+    return jsonify({'count': len(kills), 'kills': kills})
+
+
+def get_kills(match_key, player_name):
+    data = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerKill')
+    kills = []
+    date = None
+    for detail_rec in match_details(match_key=match_key):
+        print(detail_rec['json']['data']['attributes']['createdAt'])
+        date = datetime.strptime(detail_rec['json']['data']['attributes']['createdAt'], '%Y-%m-%dT%H:%M:%SZ')
+    for event in data:
+        killer = event['Killer']['Name']
+        if killer != player_name:
+            continue
+        weapon = WEAPON_MAP.get(event['DamageCauserName'], event['DamageCauserName'])
+        time_str = event["_D"][:19] + 'Z'
+        time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ') - date
+        target = event['Victim']['Name']
+        kills.append({'killer': killer, 'weapon': weapon, 'target': target, 'time': str(time)[3:]})
+
+    return kills
 
 
 if __name__ == '__main__':

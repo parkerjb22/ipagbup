@@ -243,48 +243,26 @@
                 <tr ng-repeat="(playerName, stats) in vm.matches[vm.rowNumber].stats"><td>
                     <div class="row mb-2">
                         <div class="col-sm-12" style="padding-left: 6px;">{{ playerName }}</div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-7">
                             <div class="row">
-                                <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 120px">
                                         <div style="padding: 8px 12px;">
                                             <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ stats.kills }} ({{ stats.headshotKills }})</div>
                                             <div style="font-size: 12px; color: #696969">Kills (headShots)</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 100px">
                                         <div style="padding: 8px 12px;">
                                             <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ stats.damageDealt | number: 2 }}</div>
                                             <div style="font-size: 12px; color: #696969">Damage</div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
-                                        <div style="padding: 8px 12px;">
-                                            <div style="font-size: 14px; line-height: 16px">{{ stats.assists }}</div>
-                                            <div style="font-size: 12px; color: #696969">Assists</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
-                                        <div style="padding: 8px 12px;">
-                                            <div style="font-size: 14px; line-height: 16px">{{ stats.DBNOs }}</div>
-                                            <div style="font-size: 12px; color: #696969">DBNO</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-s-12">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 250px">
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 100px">
                                         <div style="padding: 8px 12px;">
                                             <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ ((stats.walkDistance + stats.rideDistance) / 1000) | number:2 }}
                                                 km
@@ -293,57 +271,99 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 100px">
+                                        <div style="padding: 8px 12px;">
+                                            <div style="font-size: 18px; line-height: 22px; font-weight: 700;">{{ stats.timeSurvived | secondsToHHmmss }}</div>
+                                            <div style="font-size: 12px; color: #696969">Survival Time</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
-                                <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 120px">
                                         <div style="padding: 8px 12px;">
-                                            <div style="font-size: 14px; line-height: 16px;">{{ (stats.walkDistance / 1000) | number:2 }}
-                                                km
-                                            </div>
-                                            <div style="font-size: 12px; color: #696969">Walk Distance</div>
+                                            <div style="font-size: 14px; line-height: 16px">{{ stats.assists }}</div>
+                                            <div style="font-size: 12px; color: #696969">Assists</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 100px">
+                                        <div style="padding: 8px 12px;">
+                                            <div style="font-size: 14px; line-height: 16px">{{ stats.DBNOs }}</div>
+                                            <div style="font-size: 12px; color: #696969">DBNO</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 100px">
                                         <div style="padding: 8px 12px;">
-                                            <div style="font-size: 14px; line-height: 16px;">{{ (stats.rideDistance / 1000) | number:2 }}
+                                            <div style="font-size: 14px; line-height: 16px">{{ (stats.walkDistance / 1000) | number:2 }}
                                                 km
                                             </div>
-                                            <div style="font-size: 12px; color: #696969">Ride Distance</div>
+                                            <div style="font-size: 12px; color: #696969">Walk Dist</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 120px">
+                                        <div style="padding: 8px 12px;">
+                                            <div style="font-size: 14px; line-height: 16px;">{{ stats.heals }} / {{ stats.boosts }}</div>
+                                            <div style="font-size: 12px; color: #696969">Heals / Boosts</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-s-3">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 100px">
+                                        <div style="padding: 8px 12px;">
+                                            <div style="font-size: 14px; line-height: 16px">{{ stats.revives }}</div>
+                                            <div style="font-size: 12px; color: #696969">Revives</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-s-6">
+                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 100px">
+                                        <div style="padding: 8px 12px;">
+                                            <div style="font-size: 14px; line-height: 16px">{{ (stats.rideDistance / 1000) | number:2 }}
+                                                km
+                                            </div>
+                                            <div style="font-size: 12px; color: #696969">Ride Dist</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
-                                        <div style="padding: 8px 12px;">
-                                            <div style="font-size: 18px; line-height: 22px;">{{ stats.heals }} / {{ stats.boosts }}</div>
-                                            <div style="font-size: 12px; color: #696969">Heals / Boosts</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-s-6">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 122px">
-                                        <div style="padding: 8px 12px;">
-                                            <div style="font-size: 18px; line-height: 22px;">{{ stats.revives }}</div>
-                                            <div style="font-size: 12px; color: #696969">Revives</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-s-12">
-                                    <div style="margin-left: 6px; margin-bottom: 6px; width: 250px">
-                                        <div style="padding: 8px 12px;">
-                                            <div style="font-size: 14px; line-height: 16px;">{{ stats.timeSurvived | secondsToHHmmss }}</div>
-                                            <div style="font-size: 12px; color: #696969">Survival Time</div>
-                                        </div>
-                                    </div>
+                        <div class="col-sm-5">
+                            <div ng-hide="stats.kill_details == 0" style="margin-top: 0">
+                                <div style="height: 152px;overflow: auto;border: 1px solid #eaeaea;background-color: #eaeaea;">
+                                    <ul>
+                                        <li style="background-color: #f6f6f6;" ng-repeat="kill in stats.kill_details | orderBy:'time'">
+                                            <button style="position: relative;background-color: transparent;color: #2b2e28;display: block;width: 100%;height: 50px;text-align: left;">
+                                                <span style="display: table;width: 100%;table-layout: fixed;">
+                                                    <span style="width: 47px;text-align: center; display: table-cell;vertical-align: middle;">
+                                                        <span style="color: #696969;font-size: 12px;">{{ kill.time }}</span>
+                                                    </span>
+                                                    <span style="display: table-cell;vertical-align: middle;width: auto;">
+                                                        <span style="padding-left: 4px;display: block;">
+                                                            <span style="display: block;position: relative;width: auto;vertical-align: top;">
+                                                                <span style="display: inline-block;max-width: 100%;vertical-align: top;position: relative">
+                                                                    <span style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;color: #2b2e28;font-weight: 700;">{{ kill.target }}</span>
+                                                                </span>
+                                                            </span>
+                                                            <span style="display: block;position: relative;width: auto;vertical-align: top;">
+                                                                <span style="color: #dd8700;font-size: 12px;">{{ kill.weapon }}</span>
+                                                                <!--<span style="display: inline-block;margin-left: 5px;font-size: 12px;color: #9a9797;white-space: nowrap;">(8m)</span>-->
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </button>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
