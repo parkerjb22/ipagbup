@@ -327,7 +327,7 @@ def get_all_telemetry():
     for rec in telemetry():
         result.append(rec['match_key'])
 
-    return jsonify(result)
+    return jsonify({'count': len(result), 'matches': result})
 
 
 @app.route("/api/telemetry/<match_key>/events")
@@ -350,11 +350,12 @@ def get_telemetry(match_key, num_results):
     return jsonify(result)
 
 
-def get_match_telemetry(match_key, num_results=sys.maxsize, event_type=None, page=0, player_name=None):
+def get_match_telemetry(match_key=None, num_results=sys.maxsize, event_type=None, page=0, player_name=None):
     result = []
     skip_to = num_results * page
     row_count = 0
-    for rec in telemetry(match_key=match_key):
+    records = telemetry() if match_key is None else telemetry(match_key=match_key)
+    for rec in records:
         for data in rec['json']:
             if not event_match(player_name, event_type, data):
                 continue
@@ -413,6 +414,20 @@ def get_damage_by_player(match_key, player_name):
 def get_kills_by_player(match_key, player_name):
     kills = get_kills(match_key, player_name)
     return jsonify({'count': len(kills), 'kills': kills})
+
+
+@app.route("/api/weapons/<player_name>")
+def get_player_kills_by_weapon(player_name):
+    data = get_match_telemetry(player_name=player_name, event_type='LogPlayerKill')
+    weapons = {}
+    for event in data:
+        killer = event['Killer']['Name']
+        if killer != player_name:
+            continue
+        weapon = WEAPON_MAP.get(event['DamageCauserName'], event['DamageCauserName'])
+        weapons[weapon] = weapons.get(weapon, 0) + 1
+
+    return jsonify(weapons)
 
 
 def get_kills(match_key, player_name):
