@@ -493,7 +493,7 @@ def get_kills(match_key, player_name):
         time_str = event["_D"][:19] + 'Z'
         time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ') - date
         target = event['Victim']['Name']
-        kills.append({'killer': killer, 'weapon': weapon, 'target': target, 'time': str(time)[3:]})
+        kills.append({'killer': killer, 'weapon': weapon, 'target': target, 'time': time.seconds})
 
     return kills
 
