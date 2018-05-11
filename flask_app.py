@@ -23,25 +23,52 @@ for k, v in PLAYER_IDS.items():
     PLAYER_NAMES[v] = k
 
 WEAPON_MAP = {
+
+    # Misc
     'PlayerMale_A_C': 'Melee',
     'PlayerFemale_A_C': 'Melee',
-    'WeapSCAR-L_C': 'SCAR',
+    'ProjGrenade_C': 'Grenade',
+
+    # ARs
+    'WeapSCAR-L_C': 'SCAR-L',
     'WeapHK416_C': 'M4',
     'WeapAK47_C': 'AK47',
-    'WeapVSS_C': 'VSS',
     'WeapM16A4_C': 'M16',
-    'WeapUMP_C': 'UMP',
-    'WeapBerreta686_C': 'S686',
-    'WeapDP28_C': 'DP',
-    'WeapM9_C': 'M9',
-    'WeapM1911_C': 'M1911',
-    'Buggy_A_03_C': 'Buggy',
-    'Dacia_A_02_v2_C': 'Dacia',
-    'ProjGrenade_C': 'Grenade',
+
+    # Snipers
     'WeapKar98k_C': 'Kar 98k',
     'WeapSKS_C': 'SKS',
+    'WeapMini14_C': 'Mini 14',
+    'WeapVSS_C': 'VSS',
+
+    # SMGs
     'WeapThompson_C': 'Thompson',
-    'WeapUZI_C': 'Micro Uzi'
+    'WeapUMP_C': 'UMP',
+    'WeapVector_C': 'Vector',
+    'WeapUZI_C': 'Micro Uzi',
+
+    # Shotguns
+    'WeapBerreta686_C': 'S686',
+    'WeapWinchester_C': 'S1987',
+    'WeapSaiga12_C': 'S12k',
+
+    # Pistols
+    'WeapM9_C': 'M9',
+    'WeapM1911_C': 'M1911',
+
+    'WeapDP28_C': 'DP28',
+    'WeapM249_C': 'M249',
+    'WeapCrossbow_1_C': 'Crossbow',
+
+    # Vehicles
+    'Buggy_A_03_C': 'Buggy',
+    'Dacia_A_02_v2_C': 'Dacia',
+    'BP_Motorbike_04_SideCar_C': 'Motorcycle',
+    'Uaz_A_01_C': 'UAZ',
+    'Uaz_C_01_C': 'UAZ',
+
+    'WeapNagantM1895_C': 'R1895'
+
 }
 
 DB_DIR = 'stats/db/'
