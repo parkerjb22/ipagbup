@@ -40,6 +40,7 @@ WEAPON_MAP = {
     'WeapSKS_C': 'SKS',
     'WeapMini14_C': 'Mini 14',
     'WeapVSS_C': 'VSS',
+    'WeapM24_C': 'M24',
 
     # SMGs
     'WeapThompson_C': 'Thompson',
@@ -104,13 +105,23 @@ seasons = create_seasons()
 telemetry = create_telemetry()
 
 
-def summarize(details, player_name=None, game_type=None):
+def summarize(details, player_name=None, game_type=None, limit=None):
+    rounds = []
     summary = []
     for rec in details:
         if game_type is not None and rec['json']['data']['attributes']['gameMode'] != game_type:
             continue
         data_array = rec['json']['included']
-        for data in data_array:
+        date = rec['json']['data']['attributes']['createdAt']
+        rounds.append({'data': data_array, 'date': date})
+
+    sorted_rounds = sorted(rounds, key=lambda x: x['date'], reverse=True)
+    counter = 0
+
+    for single_round in sorted_rounds:
+        if limit and counter >= int(limit):
+            break
+        for data in single_round['data']:
             if data['type'] == 'participant':
                 player_id = data['attributes']['stats']['playerId'][8:]
 
@@ -118,6 +129,10 @@ def summarize(details, player_name=None, game_type=None):
                     continue
                 if player_name is None and player_id not in PLAYER_IDS.values():
                     continue
+
+                if limit is not None:
+                    if player_name is None or player_id == PLAYER_IDS[player_name]:
+                        counter += 1
 
                 name = data['attributes']['stats']['name']
                 kills = data['attributes']['stats']['kills']
@@ -183,14 +198,16 @@ def index():
 @app.route("/api/stats")
 def get_stats():
     game_type = request.args.get('type')
-    summary = summarize(match_details(), game_type=game_type)
+    limit = request.args.get('limit')
+    summary = summarize(match_details(), game_type=game_type, limit=limit)
     return jsonify(summary)
 
 
 @app.route("/api/stats/<player_name>")
 def get_player_stats(player_name):
     game_type = request.args.get('type')
-    summary = summarize(match_details(), player_name=player_name, game_type=game_type)
+    limit = request.args.get('limit')
+    summary = summarize(match_details(), player_name=player_name, game_type=game_type, limit=limit)
     return jsonify(summary[0])
 
 

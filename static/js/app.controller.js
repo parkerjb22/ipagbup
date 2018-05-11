@@ -50,7 +50,17 @@
         vm.playerName = $stateParams.playerName
         vm.rowNumber = -1
         vm.sortType = '-date'
+        vm.getStats = getStats
         activate();
+
+        vm.limits = [
+            { 'text':'All Matches', 'amount': null},
+            { 'text':'Last 10', 'amount': 10},
+            { 'text':'Last 25', 'amount': 25},
+            { 'text':'Last 50', 'amount': 50},
+        ]
+
+        vm.selectedLimit = vm.limits[0]
 
         function activate() {
             StatsService.getPlayerMatches(vm.playerName).then(function(matches){
@@ -67,6 +77,13 @@
 
             StatsService.getPlayerStats(vm.playerName).then(function(player){
                 vm.player = player
+            })
+        }
+
+        function getStats(limit){
+            StatsService.getPlayerStats(vm.playerName, limit.amount).then(function(player){
+                vm.player = player
+                vm.selectedLimit = limit
             })
         }
     }

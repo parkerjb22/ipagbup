@@ -152,12 +152,20 @@
                     <div class="col-s-12">
                         <div style="background-color:#f6f6f6; margin-left: 6px; margin-bottom: 6px; width: 250px">
                             <div style="padding: 8px 12px;">
-                                <div style="font-size: 14px; line-height: 16px;">{{ (vm.player.timeSurvived/vm.player.rounds) | number:0 | secondsToHHmmss }}</div>
+                                <div style="font-size: 14px; line-height: 16px;">{{ (vm.player.timeSurvived/vm.player.rounds) | secondsToHHmmss }}</div>
                                 <div style="font-size: 12px; color: #696969">Avg Survival Time</div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-1">
+        <div class="dropdown show">
+            <a class="btn btn-primary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ vm.selectedLimit.text }}</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a ng-repeat="limit in vm.limits" class="dropdown-item" ng-click="vm.getStats(limit)">{{ limit.text }}</a>
             </div>
         </div>
     </div>
