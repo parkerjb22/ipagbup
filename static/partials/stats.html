@@ -1,5 +1,5 @@
 <div class="row m-2">
-    <div class='col-sm-12'>
+    <div class='col-sm-8 offset-2'>
         <div class="dropdown show">
             <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Game Type</a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -9,7 +9,7 @@
     </div>
 </div>
 <div class="row">
-    <div class='col-sm-12'>
+    <div class='col-sm-8 offset-2'>
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
@@ -33,6 +33,21 @@
                     <td>{{ (player.kills / player.deaths) | number:3 }}</td>
                     <td>{{ (player.dmg / player.rounds) | number: 2 }}</td>
                     <td>{{ player.dbno }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class='col-sm-8 offset-2'>
+        <h3>Favorite Weapons</h3>
+        <table class="table table-striped table-condensed">
+            <tbody>
+                <tr ng-repeat="player in vm.weapons">
+                    <td>{{ player.name }}</td>
+                    <td ng-repeat="weapon in player.weapons| orderBy: '-Kills' |limitTo:5">
+                        {{ weapon.Name }} ({{ weapon.Kills }})
+                    </td>
                 </tr>
             </tbody>
         </table>

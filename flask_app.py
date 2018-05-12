@@ -3,6 +3,7 @@ from flask import Flask, render_template, jsonify, request, abort
 import json
 import sys
 from datetime import datetime
+from operator import itemgetter
 
 app = Flask(__name__)
 
@@ -56,6 +57,7 @@ WEAPON_MAP = {
     # Pistols
     'WeapM9_C': 'M9',
     'WeapM1911_C': 'M1911',
+    'WeapNagantM1895_C': 'R1895',
 
     'WeapDP28_C': 'DP28',
     'WeapM249_C': 'M249',
@@ -68,7 +70,7 @@ WEAPON_MAP = {
     'Uaz_A_01_C': 'UAZ',
     'Uaz_C_01_C': 'UAZ',
 
-    'WeapNagantM1895_C': 'R1895'
+    'BattleRoyaleModeController_Def_C': 'crap'
 
 }
 
@@ -412,6 +414,7 @@ def get_match_telemetry(match_key=None, num_results=sys.maxsize, event_type=None
             if row_count <= skip_to:
                 continue
             if len(result) < int(num_results):
+                data['match_key'] = rec['match_key']
                 result.append(data)
             else:
                 break
@@ -465,37 +468,67 @@ def get_kills_by_player(match_key, player_name):
     return jsonify({'count': len(kills), 'kills': kills})
 
 
-@app.route("/api/weapons/<player_name>")
+@app.route("/api/weapons")
+def get_kills_by_weapon():
+    player_name = request.args.get('player')
+    result = []
+    if player_name:
+        result = get_player_kills_by_weapon(player_name)
+    else:
+        for p_name in PLAYER_IDS.keys():
+            weapons = get_player_kills_by_weapon(p_name)
+            result.append({'name': p_name, 'weapons': weapons})
+
+    return jsonify(result)
+
+
 def get_player_kills_by_weapon(player_name):
     data = get_match_telemetry(player_name=player_name, event_type='LogPlayerKill')
     weapons = {}
+    result = []
     for event in data:
         killer = event['Killer']['Name']
         if killer != player_name:
             continue
         weapon = WEAPON_MAP.get(event['DamageCauserName'], event['DamageCauserName'])
+        if weapon in ['crap', 'Melee']:
+            damage_events = get_match_telemetry(event['match_key'], player_name=player_name, event_type='LogPlayerTakeDamage')
+            weapon = find_murder_weapon(damage_events, event['Victim']['Name'])
         weapons[weapon] = weapons.get(weapon, 0) + 1
 
-    return jsonify(weapons)
+    for w_name, w_kills in weapons.items():
+        result.append({'Name': w_name, 'Kills': w_kills})
+    return result
 
 
 def get_kills(match_key, player_name):
-    data = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerKill')
+    kill_events = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerKill')
+    damage_events = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerTakeDamage')
     kills = []
-    date = None
+    match_date = None
     for detail_rec in match_details(match_key=match_key):
-        date = datetime.strptime(detail_rec['json']['data']['attributes']['createdAt'], '%Y-%m-%dT%H:%M:%SZ')
-    for event in data:
+        match_date = datetime.strptime(detail_rec['json']['data']['attributes']['createdAt'], '%Y-%m-%dT%H:%M:%SZ')
+    for event in kill_events:
         killer = event['Killer']['Name']
-        if killer != player_name:
+        target = event['Victim']['Name']
+        if killer != player_name or target == player_name:
             continue
         weapon = WEAPON_MAP.get(event['DamageCauserName'], event['DamageCauserName'])
         time_str = event["_D"][:19] + 'Z'
-        time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ') - date
-        target = event['Victim']['Name']
+        kill_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ')
+        time = kill_time - match_date
+        if weapon == 'crap' or 'Melee':
+            weapon = find_murder_weapon(damage_events, target)
         kills.append({'killer': killer, 'weapon': weapon, 'target': target, 'time': time.seconds})
 
     return kills
+
+
+def find_murder_weapon(attack_events, target):
+    filtered_attacks = [d for d in attack_events if d['Victim']['Name'] == target]
+    sorted_attacks = sorted(filtered_attacks, key=itemgetter("_D"), reverse=True)
+    weapon = sorted_attacks[0]['DamageCauserName']
+    return WEAPON_MAP.get(weapon, weapon)
 
 
 if __name__ == '__main__':

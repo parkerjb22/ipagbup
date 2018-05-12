@@ -17,10 +17,19 @@
 			get: { method: 'GET', params: {}, isArray: false }
 	    })
 
+	    var weaponStatsResource = $resource('api/weapons', {}, {
+			query: { method: 'GET', params: {}, isArray: true }
+	    })
+
         return {
             getStats: getStats,
             getPlayerStats: getPlayerStats,
             getPlayerMatches: getPlayerMatches,
+            getWeaponStats: getWeaponStats
+        }
+
+        function getWeaponStats(){
+            return weaponStatsResource.query().$promise
         }
 
         function getStats(type) {

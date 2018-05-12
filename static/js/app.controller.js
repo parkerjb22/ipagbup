@@ -18,6 +18,10 @@
             StatsService.getStats().then(function(stats){
                 vm.stats = stats
             })
+
+            StatsService.getWeaponStats().then(function(weapons){
+                vm.weapons = weapons
+            })
         }
 
         function getStats(type){
