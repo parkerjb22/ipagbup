@@ -18,14 +18,16 @@
 	    })
 
 	    var weaponStatsResource = $resource('api/weapons', {}, {
-			query: { method: 'GET', params: {}, isArray: true }
+			query: { method: 'GET', params: {}, isArray: true },
+			get: { method: 'GET', params: {}, isArray: false }
 	    })
 
         return {
             getStats: getStats,
             getPlayerStats: getPlayerStats,
             getPlayerMatches: getPlayerMatches,
-            getWeaponStats: getWeaponStats
+            getWeaponStats: getWeaponStats,
+            getPlayerWeapons: getPlayerWeapons
         }
 
         function getWeaponStats(){
@@ -42,6 +44,10 @@
 
         function getPlayerMatches(name) {
             return playerResource.query({name: name}).$promise
+        }
+
+        function getPlayerWeapons(name) {
+            return weaponStatsResource.get({name:name}).$promise
         }
 
     }

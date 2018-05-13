@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="player in vm.stats">
+                <tr ng-repeat="player in vm.stats | orderBy:'-rounds'">
                     <td><a href="#/player/{{ player.name }}">{{ player.name }}</a></td>
                     <td>{{ player.rounds }}</td>
                     <td>{{ (player.rounds - player.deaths) }}</td>
@@ -45,8 +45,8 @@
             <tbody>
                 <tr ng-repeat="player in vm.weapons">
                     <td>{{ player.name }}</td>
-                    <td ng-repeat="weapon in player.weapons| orderBy: '-Kills' |limitTo:5">
-                        {{ weapon.Name }} ({{ weapon.Kills }})
+                    <td ng-repeat="weapon in player.weapons| orderBy: '-kills' |limitTo:5">
+                        {{ weapon.name }} ({{ weapon.kills }})
                     </td>
                 </tr>
             </tbody>

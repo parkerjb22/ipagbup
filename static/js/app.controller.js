@@ -51,11 +51,11 @@
 
     function PlayerViewCtrl($stateParams, $interval, StatsService) {
         var vm = this
+
         vm.playerName = $stateParams.playerName
         vm.rowNumber = -1
+        vm.tab = 0
         vm.sortType = '-date'
-        vm.getStats = getStats
-        activate();
 
         vm.limits = [
             { 'text':'All Matches', 'amount': null},
@@ -65,6 +65,10 @@
         ]
 
         vm.selectedLimit = vm.limits[0]
+
+        vm.getStats = getStats
+
+        activate();
 
         function activate() {
             StatsService.getPlayerMatches(vm.playerName).then(function(matches){
@@ -81,6 +85,10 @@
 
             StatsService.getPlayerStats(vm.playerName).then(function(player){
                 vm.player = player
+            })
+
+            StatsService.getPlayerWeapons(vm.playerName).then(function(result){
+                vm.weapons = result.weapons
             })
         }
 

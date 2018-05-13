@@ -69,8 +69,10 @@ WEAPON_MAP = {
     'BP_Motorbike_04_SideCar_C': 'Motorcycle',
     'Uaz_A_01_C': 'UAZ',
     'Uaz_C_01_C': 'UAZ',
+    'Uaz_B_01_C': 'UAZ',
 
-    'BattleRoyaleModeController_Def_C': 'crap'
+    'BattleRoyaleModeController_Def_C': 'crap',
+    'Buff_DecreaseBreathInApnea_C': 'crap'
 
 }
 
@@ -470,10 +472,11 @@ def get_kills_by_player(match_key, player_name):
 
 @app.route("/api/weapons")
 def get_kills_by_weapon():
-    player_name = request.args.get('player')
+    player_name = request.args.get('name')
     result = []
     if player_name:
-        result = get_player_kills_by_weapon(player_name)
+        weapons = get_player_kills_by_weapon(player_name)
+        result = {'name': player_name, 'weapons': weapons}
     else:
         for p_name in PLAYER_IDS.keys():
             weapons = get_player_kills_by_weapon(p_name)
@@ -497,7 +500,7 @@ def get_player_kills_by_weapon(player_name):
         weapons[weapon] = weapons.get(weapon, 0) + 1
 
     for w_name, w_kills in weapons.items():
-        result.append({'Name': w_name, 'Kills': w_kills})
+        result.append({'name': w_name, 'kills': w_kills})
     return result
 
 
