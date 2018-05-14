@@ -491,7 +491,8 @@ def get_player_kills_by_weapon(player_name):
     result = []
     for event in data:
         killer = event['Killer']['Name']
-        if killer != player_name:
+        target = event['Victim']['Name']
+        if killer != player_name or target == player_name:
             continue
         weapon = WEAPON_MAP.get(event['DamageCauserName'], event['DamageCauserName'])
         if weapon in ['crap', 'Melee']:
