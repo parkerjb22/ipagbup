@@ -22,12 +22,18 @@
 			get: { method: 'GET', params: {}, isArray: false }
 	    })
 
+	    var killsResource = $resource('api/kills/:match', {match: "@match"}, {
+			query: { method: 'GET', params: {}, isArray: true },
+			get: { method: 'GET', params: {}, isArray: false }
+	    })
+
         return {
             getStats: getStats,
             getPlayerStats: getPlayerStats,
             getPlayerMatches: getPlayerMatches,
             getWeaponStats: getWeaponStats,
-            getPlayerWeapons: getPlayerWeapons
+            getPlayerWeapons: getPlayerWeapons,
+            getMatchKills: getMatchKills
         }
 
         function getWeaponStats(){
@@ -48,6 +54,10 @@
 
         function getPlayerWeapons(name) {
             return weaponStatsResource.get({name:name}).$promise
+        }
+
+        function getMatchKills(match){
+            return killsResource.get({match:match}).$promise
         }
 
     }

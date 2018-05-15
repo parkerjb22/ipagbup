@@ -47,9 +47,9 @@
 
     myApp.controller("PlayerViewCtrl", PlayerViewCtrl)
 
-    PlayerViewCtrl.$inject = ['$stateParams', '$interval', 'StatsService']
+    PlayerViewCtrl.$inject = ['$stateParams', '$interval', 'StatsService', '$cacheFactory']
 
-    function PlayerViewCtrl($stateParams, $interval, StatsService) {
+    function PlayerViewCtrl($stateParams, $interval, StatsService, $cacheFactory) {
         var vm = this
 
         vm.playerName = $stateParams.playerName
@@ -67,6 +67,14 @@
         vm.selectedLimit = vm.limits[0]
 
         vm.getStats = getStats
+        vm.selectMatch = selectMatch
+
+        var cacheName = 'dmg_cache'
+        if ($cacheFactory.get(cacheName)){
+            vm.cache = $cacheFactory.get(cacheName)
+        } else {
+            vm.cache = $cacheFactory(cacheName, { capacity: 25 });
+        }
 
         activate();
 
@@ -97,6 +105,19 @@
                 vm.player = player
                 vm.selectedLimit = limit
             })
+        }
+
+        function selectMatch(row){
+            vm.rowNumber = row
+            var id = vm.matches[row].key
+            if (vm.cache.get(id)){
+                vm.matchKills = vm.cache.get(id)
+            } else {
+                StatsService.getMatchKills(id).then(function(matchKills){
+                    vm.matchKills = matchKills
+                    vm.cache.put(id, matchKills)
+                })
+            }
         }
     }
 

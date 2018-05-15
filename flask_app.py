@@ -241,11 +241,7 @@ def get_player(player_name):
                 if data['type'] == 'participant':
                     player_id = data['attributes']['stats']['playerId'][8:]
                     if player_id in PLAYER_IDS.values():
-                        kills = []
-                        if telemetry(match_key=rec['match_key']):
-                            kills = get_kills(rec['match_key'], PLAYER_NAMES[player_id])
                         player_stats = data['attributes']['stats']
-                        player_stats['kill_details'] = kills
                         stats[data['attributes']['stats']['name']] = player_stats
                 elif data['type'] == 'roster':
                     team_count += 1
@@ -532,7 +528,40 @@ def find_murder_weapon(attack_events, target):
     filtered_attacks = [d for d in attack_events if d['Victim']['Name'] == target]
     sorted_attacks = sorted(filtered_attacks, key=itemgetter("_D"), reverse=True)
     weapon = sorted_attacks[0]['DamageCauserName']
+    for attack in sorted_attacks:
+        if attack['Victim']['Health'] > 0:
+            weapon = attack['DamageCauserName']
+            break
     return WEAPON_MAP.get(weapon, weapon)
+
+
+@app.route("/api/dmg/types")
+def get_damage_types():
+    data = get_match_telemetry(event_type='LogPlayerTakeDamage')
+    result = set()
+
+    for event in data:
+        result.add(event['DamageReason'])
+
+    return jsonify(list(result))
+
+
+@app.route("/api/kills/<match_key>")
+def get_damage_caused(match_key):
+    result = {}
+    if telemetry(match_key=match_key):
+        for player_name, player_id in PLAYER_IDS.items():
+            if not matches(match_key=match_key, player_id=player_id):
+                continue
+            kills = get_kills(match_key, PLAYER_NAMES[player_id])
+            player_dmg = []
+            data = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerTakeDamage')
+            for event in data:
+                player_dmg.append(event)
+
+            result[player_name] = {'dmg': data, 'kills': kills}
+
+    return jsonify(result)
 
 
 if __name__ == '__main__':
