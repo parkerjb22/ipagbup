@@ -21,6 +21,7 @@
                     <th>KDR</th>
                     <th>Avg Dmg</th>
                     <th>DBNO</th>
+                    <th>Ran out of Gas</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +34,7 @@
                     <td>{{ (player.kills / player.deaths) | number:3 }}</td>
                     <td>{{ (player.dmg / player.rounds) | number: 2 }}</td>
                     <td>{{ player.dbno }}</td>
+                    <td>{{ player.name === 'BigGoof20' ? '1' : '0' }}</td>
                 </tr>
             </tbody>
         </table>
