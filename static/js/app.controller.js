@@ -4,9 +4,9 @@
 
     myApp.controller("StatsViewCtrl", StatsViewCtrl)
 
-    StatsViewCtrl.$inject = ['$stateParams', '$interval', 'StatsService']
+    StatsViewCtrl.$inject = ['$stateParams', 'StatsService']
 
-    function StatsViewCtrl($stateParams, $interval, StatsService) {
+    function StatsViewCtrl($stateParams, StatsService) {
         var vm = this
         vm.getStats = getStats
 
@@ -47,9 +47,9 @@
 
     myApp.controller("PlayerViewCtrl", PlayerViewCtrl)
 
-    PlayerViewCtrl.$inject = ['$stateParams', '$interval', 'StatsService', '$cacheFactory']
+    PlayerViewCtrl.$inject = ['$stateParams', 'StatsService', '$cacheFactory']
 
-    function PlayerViewCtrl($stateParams, $interval, StatsService, $cacheFactory) {
+    function PlayerViewCtrl($stateParams, StatsService, $cacheFactory) {
         var vm = this
 
         vm.playerName = $stateParams.playerName
@@ -110,6 +110,42 @@
         function selectMatch(row){
             vm.rowNumber = row
             var id = vm.matches[row].key
+            if (vm.cache.get(id)){
+                vm.matchKills = vm.cache.get(id)
+            } else {
+                StatsService.getMatchKills(id).then(function(matchKills){
+                    vm.matchKills = matchKills
+                    vm.cache.put(id, matchKills)
+                })
+            }
+        }
+    }
+
+})();
+
+(function() {
+
+    var myApp = angular.module('myApp')
+
+    myApp.controller("ShotChartViewCtrl", ShotChartViewCtrl)
+
+    ShotChartViewCtrl.$inject = ['$stateParams', 'StatsService', '$cacheFactory']
+
+    function ShotChartViewCtrl($stateParams, StatsService, $cacheFactory) {
+        var vm = this
+        vm.matchKey = $stateParams.matchKey
+
+        var cacheName = 'dmg_cache'
+        if ($cacheFactory.get(cacheName)){
+            vm.cache = $cacheFactory.get(cacheName)
+        } else {
+            vm.cache = $cacheFactory(cacheName, { capacity: 25 });
+        }
+
+        activate();
+
+        function activate() {
+            var id = vm.matchKey
             if (vm.cache.get(id)){
                 vm.matchKills = vm.cache.get(id)
             } else {

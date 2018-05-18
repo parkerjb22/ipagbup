@@ -2,6 +2,7 @@ from pydblite.pydblite import Base
 from flask import Flask, render_template, jsonify, request, abort
 import json
 import sys
+import operator
 from datetime import datetime
 from operator import itemgetter
 
@@ -58,6 +59,7 @@ WEAPON_MAP = {
     'WeapM9_C': 'M9',
     'WeapM1911_C': 'M1911',
     'WeapNagantM1895_C': 'R1895',
+    'WeapG18_C': 'G18',
 
     'WeapDP28_C': 'DP28',
     'WeapM249_C': 'M249',
@@ -65,7 +67,10 @@ WEAPON_MAP = {
 
     # Vehicles
     'Buggy_A_03_C': 'Buggy',
+    'Buggy_A_02_C': 'Buggy',
     'Dacia_A_02_v2_C': 'Dacia',
+    'Dacia_A_01_v2_C': 'Dacia',
+    'BP_Motorbike_04_C': 'Motorcycle',
     'BP_Motorbike_04_SideCar_C': 'Motorcycle',
     'Uaz_A_01_C': 'UAZ',
     'Uaz_C_01_C': 'UAZ',
@@ -555,11 +560,95 @@ def get_damage_caused(match_key):
                 continue
             kills = get_kills(match_key, PLAYER_NAMES[player_id])
             player_dmg = []
+            match_date = None
+            for detail_rec in match_details(match_key=match_key):
+                match_date = datetime.strptime(detail_rec['json']['data']['attributes']['createdAt'],
+                                               '%Y-%m-%dT%H:%M:%SZ')
             data = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerTakeDamage')
             for event in data:
+                weapon = event['DamageCauserName']
+                event['weapon'] = WEAPON_MAP.get(weapon, weapon)
+                event['target'] = event['Victim']['Name']
+                time_str = event["_D"][:19] + 'Z'
+                kill_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ')
+                time = kill_time - match_date
+                event['time'] = time.seconds
                 player_dmg.append(event)
 
-            result[player_name] = {'dmg': data, 'kills': kills}
+            result[player_name] = {'dmg': player_dmg, 'kills': kills}
+
+    return jsonify(result)
+
+
+@app.route("/api/hits")
+def get_dmg_by_loc():
+    data = get_match_telemetry(event_type='LogPlayerTakeDamage')
+    results = {}
+
+    for p in PLAYER_IDS.keys():
+        results[p] = {'hits': 0, 'shots': 0}
+
+    for event in data:
+        attacker = event['Attacker']['Name']
+        shot_loc = event['DamageReason']
+        if event['DamageTypeCategory'] == "Damage_Gun" and event['Attacker']['Name'] in PLAYER_IDS.keys():
+            if shot_loc in results[attacker].keys():
+                results[attacker][shot_loc] += 1
+            else:
+                results[attacker][shot_loc] = 1
+            results[attacker]['hits'] += 1
+
+    data = get_match_telemetry(event_type='LogPlayerAttack')
+    for event in data:
+        attacker = event['Attacker']['Name']
+        weapon = event['Weapon']['ItemId']
+        if event['AttackType'] == 'Weapon' and event['Attacker']['Name'] in PLAYER_IDS.keys():
+            if weapon in [
+                "Item_Weapon_FlashBang_C",
+                "Item_Weapon_Grenade_C",
+                "Item_Weapon_Molotov_C",
+                "Item_Weapon_SmokeBomb_C",
+                "Item_Weapon_Sickle_C",
+                "Item_Weapon_Pan_C"
+            ]:
+                continue
+
+            weapon = WEAPON_MAP.get(weapon, weapon)
+
+            if weapon in results[attacker].keys():
+                results[attacker][weapon] += 1
+            else:
+                results[attacker][weapon] = 1
+            results[attacker]['shots'] += 1
+
+    for player in results.keys():
+        results[player]['percent'] = results[player]['hits'] / results[player]['shots'] * 100
+
+    return jsonify(results)
+
+
+@app.route("/api/repeats")
+def get_repeat_kills():
+    names = {}
+    for rec in telemetry():
+        for data in rec['json']:
+            data_type = data['_T']
+            if data_type == 'LogPlayerKill' and data['Victim']['Name'] not in PLAYER_IDS.keys():
+                victim = data['Victim']['Name']
+                names[victim] = names.get(victim, 0) + 1
+
+    sorted_names = sorted(names.items(), key=operator.itemgetter(1))
+    return jsonify(sorted_names)
+
+
+@app.route("/api/repeats/<player_name>")
+def get_repeat_kills_for_player(player_name):
+    result = []
+    for rec in telemetry():
+        for data in rec['json']:
+            data_type = data['_T']
+            if data_type == 'LogPlayerKill' and data['Victim']['Name'] == player_name:
+                result.append(data)
 
     return jsonify(result)
 

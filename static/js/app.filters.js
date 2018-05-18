@@ -14,4 +14,10 @@
         }
     });
 
+    myApp.filter('attack', function() {
+        return function(input) {
+          return (!!input) ? input.replace('Shot', '') : '';
+        }
+    });
+
 })();

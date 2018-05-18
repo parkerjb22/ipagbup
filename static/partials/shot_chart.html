@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-sm-6" ng-repeat="(key, value) in vm.matchKills">
+            <div class="row m-2">
+                <div class='col-sm-12'>{{ key }}</div>
+            </div>
+            <div class="row m-2">
+                <div class='col-sm-6'>
+                    <div style="background-color: #f6f6f6;" ng-repeat="group in value.dmg | groupBy:'target' | toArray:true | orderBy:'_D'">
+                        <button style="position: relative;background-color: transparent;color: #2b2e28;display: block;width: 100%;text-align: left;">
+                            <span style="display: table;width: 100%;table-layout: fixed;">
+                                <span style="display: table-cell;vertical-align: middle;width: auto;">
+                                    <span style="padding-left: 4px;display: block;">
+                                        <span style="display: block;position: relative;width: auto;vertical-align: top;">
+                                            <span style="display: inline-block;max-width: 100%;vertical-align: top;position: relative">
+                                                <span style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;color: #2b2e28;font-weight: 700;">{{ group.$key }}</span>
+                                            </span>
+                                        </span>
+                                        <div style="height: 75px;overflow: auto;border: 0px solid #eaeaea;background-color: transparent;">
+                                            <span ng-repeat="event in group | orderBy:'AttackId'" style="display: block;position: relative;width: auto;vertical-align: top;">
+                                                <span style="color: #696969;font-size: 12px;">{{ event.time | secondsToHHmmss }}</span>
+                                                <span style="display: inline-block;color: #dd8700;font-size: 12px;width: 50px">{{ event.weapon }}</span>
+                                                <span style="display: inline-block;margin-left: 5px;font-size: 12px;color: #9a9797;white-space: nowrap;width: 50px">
+                                                    {{ event.Damage | number: 2 }}
+                                                </span>
+                                                <span style="display: inline-block;font-size: 12px;color: #9a9797;white-space: nowrap;width: 50px">
+                                                    {{ event.DamageReason | attack }}
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </span>
+                                </span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class='col-sm-6'>
+                    <ul>
+                        <li style="background-color: #f6f6f6;" ng-repeat="kill in value.kills | orderBy:'time'">
+                            <button style="position: relative;background-color: transparent;color: #2b2e28;display: block;width: 100%;height: 50px;text-align: left;">
+                                <span style="display: table;width: 100%;table-layout: fixed;">
+                                    <span style="width: 47px;text-align: center; display: table-cell;vertical-align: middle;">
+                                        <span style="color: #696969;font-size: 12px;">{{ kill.time | secondsToHHmmss }}</span>
+                                    </span>
+                                    <span style="display: table-cell;vertical-align: middle;width: auto;">
+                                        <span style="padding-left: 4px;display: block;">
+                                            <span style="display: block;position: relative;width: auto;vertical-align: top;">
+                                                <span style="display: inline-block;max-width: 100%;vertical-align: top;position: relative">
+                                                    <span style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;color: #2b2e28;font-weight: 700;">{{ kill.target }}</span>
+                                                </span>
+                                            </span>
+                                            <span style="display: block;position: relative;width: auto;vertical-align: top;">
+                                                <span style="color: #dd8700;font-size: 12px;">{{ kill.weapon }}</span>
+                                                <!--<span style="display: inline-block;margin-left: 5px;font-size: 12px;color: #9a9797;white-space: nowrap;">(8m)</span>-->
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+</div>

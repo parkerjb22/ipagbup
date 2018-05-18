@@ -257,7 +257,7 @@
                 </div>
                 <div class='col-sm-7'>
                     <div ng-show="vm.rowNumber != -1">
-                        <div class="bottom-buffer" style="padding-left: 6px;">{{ vm.matches[vm.rowNumber].date | date:"MM/dd/yyyy h:mma" }}</div>
+                        <div class="bottom-buffer" style="padding-left: 6px;"><a href="#/chart/{{ vm.matches[vm.rowNumber].key }}">{{ vm.matches[vm.rowNumber].date | date:"MM/dd/yyyy h:mma" }}</a></div>
                         <table class="table table-striped table-bordered">
                             <tr ng-repeat="(playerName, stats) in vm.matches[vm.rowNumber].stats"><td>
                                 <div class="row mb-2">

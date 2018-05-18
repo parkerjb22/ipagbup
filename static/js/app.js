@@ -1,7 +1,7 @@
 (function(){
 	'use strict';   // See note about 'use strict'; below
 
-	var myApp = angular.module('myApp', ['ngResource', 'ui.router']);
+	var myApp = angular.module('myApp', ['ngResource', 'ui.router', 'angular.filter']);
 
 	myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
@@ -30,6 +30,12 @@
 				url:"/player/:playerName",
 				views: {
 					"@": { templateUrl: '../static/partials/player.html', controller: 'PlayerViewCtrl', controllerAs: "vm" },
+				}
+	        })
+			.state('chart/', {
+				url:"/chart/:matchKey",
+				views: {
+					"@": { templateUrl: '../static/partials/shot_chart.html', controller: 'ShotChartViewCtrl', controllerAs: "vm" },
 				}
 			});
 	    }]);
