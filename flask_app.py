@@ -37,6 +37,10 @@ WEAPON_MAP = {
     'PlayerMale_A_C': 'Melee',
     'PlayerFemale_A_C': 'Melee',
     'ProjGrenade_C': 'Grenade',
+    'WeapCowbar_C': 'Crowbar',
+    'ProjMolotov_DamageField_C': 'Molotov',
+    'Buff_FireDOT_C': 'Molotov',
+
 
     # ARs
     'WeapSCAR-L_C': 'SCAR-L',
