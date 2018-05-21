@@ -20,6 +20,13 @@ PLAYER_IDS = {
     DAN: "9606b28ee9cc4354befc293713d3d8c0",
 }
 
+KILL_COLORS = {
+    DAN: '#008080',
+    JUSTIN: '#DC143C',
+    ALEX: '#f4c741',
+    JASON: '#4286f4'
+}
+
 PLAYER_NAMES = {}
 for k, v in PLAYER_IDS.items():
     PLAYER_NAMES[v] = k
@@ -43,6 +50,7 @@ WEAPON_MAP = {
     'WeapMini14_C': 'Mini 14',
     'WeapVSS_C': 'VSS',
     'WeapM24_C': 'M24',
+    'WeapMK14_C': 'MK14',
 
     # SMGs
     'WeapThompson_C': 'Thompson',
@@ -70,6 +78,7 @@ WEAPON_MAP = {
     'Buggy_A_02_C': 'Buggy',
     'Dacia_A_02_v2_C': 'Dacia',
     'Dacia_A_01_v2_C': 'Dacia',
+    'Dacia_A_03_v2_C': 'Dacia',
     'BP_Motorbike_04_C': 'Motorcycle',
     'BP_Motorbike_04_SideCar_C': 'Motorcycle',
     'Uaz_A_01_C': 'UAZ',
@@ -238,7 +247,7 @@ def get_player(player_name):
         date = None
         stats = {}
         team_count = 0
-        for detail_rec in match_details('match_key') == rec['match_key']:
+        for detail_rec in match_details(match_key=rec['match_key']):
             date = detail_rec['json']['data']['attributes']['createdAt']
             game_mode = detail_rec['json']['data']['attributes']['gameMode']
         if date:
@@ -555,11 +564,18 @@ def get_damage_types():
 def get_damage_caused(match_key):
     result = {}
     if telemetry(match_key=match_key):
+        all_kills = []
         for player_name, player_id in PLAYER_IDS.items():
             if not matches(match_key=match_key, player_id=player_id):
                 continue
             kills = get_kills(match_key, PLAYER_NAMES[player_id])
-            player_dmg = []
+            result[player_name] = {'kills': kills, 'color': KILL_COLORS[player_name] }
+            all_kills.append(kills)
+
+        for player_name, player_id in PLAYER_IDS.items():
+            if not matches(match_key=match_key, player_id=player_id):
+                continue
+            player_dmg = {}
             match_date = None
             for detail_rec in match_details(match_key=match_key):
                 match_date = datetime.strptime(detail_rec['json']['data']['attributes']['createdAt'],
@@ -568,16 +584,34 @@ def get_damage_caused(match_key):
             for event in data:
                 weapon = event['DamageCauserName']
                 event['weapon'] = WEAPON_MAP.get(weapon, weapon)
-                event['target'] = event['Victim']['Name']
+                target = event['Victim']['Name']
                 time_str = event["_D"][:19] + 'Z'
                 kill_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ')
                 time = kill_time - match_date
                 event['time'] = time.seconds
-                player_dmg.append(event)
+                if target not in player_dmg.keys():
+                    killer = get_killer(target, all_kills)
+                    player_dmg[target] = {
+                        'target': target, 'attacks': [], 'time': time.seconds, 'total_dmg': 0, 'killer': killer
+                    }
+                player_dmg[target]['attacks'].append(event)
+                player_dmg[target]['total_dmg'] = player_dmg[target]['total_dmg'] + event['Damage']
 
-            result[player_name] = {'dmg': player_dmg, 'kills': kills}
+            if 'dmg' not in result[player_name].keys():
+                result[player_name]['dmg'] = []
+
+            for attacks in player_dmg.values():
+                result[player_name]['dmg'].append(attacks)
 
     return jsonify(result)
+
+
+def get_killer(target, kills):
+    for player_kills in kills:
+        for kill in player_kills:
+            if kill['target'] == target:
+                return KILL_COLORS[kill['killer']]
+    return 0
 
 
 @app.route("/api/hits")
