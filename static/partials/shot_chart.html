@@ -21,7 +21,7 @@
                                             </span>
                                         </span>
                                         <div style="height: 75px;overflow: auto;border: 0px solid #eaeaea;background-color: transparent;">
-                                            <span ng-repeat="event in dmg.attacks | orderBy:'AttackId'" style="display: block;position: relative;width: auto;vertical-align: top;">
+                                            <span ng-repeat="event in dmg.attacks | orderBy:['time', 'AttackId']" style="display: block;position: relative;width: auto;vertical-align: top;">
                                                 <span style="color: #696969;font-size: 12px;">{{ event.time | secondsToHHmmss }}</span>
                                                 <span style="display: inline-block;color: #dd8700;font-size: 12px;width: 50px">{{ event.weapon }}</span>
                                                 <span style="display: inline-block;margin-left: 5px;font-size: 12px;color: #9a9797;white-space: nowrap;width: 50px">

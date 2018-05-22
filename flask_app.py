@@ -40,6 +40,7 @@ WEAPON_MAP = {
     'WeapCowbar_C': 'Crowbar',
     'ProjMolotov_DamageField_C': 'Molotov',
     'Buff_FireDOT_C': 'Molotov',
+    'WeapPan_C': 'Pan',
 
 
     # ARs
@@ -47,6 +48,7 @@ WEAPON_MAP = {
     'WeapHK416_C': 'M4',
     'WeapAK47_C': 'AK47',
     'WeapM16A4_C': 'M16',
+    'WeapGroza_C': 'Groza',
 
     # Snipers
     'WeapKar98k_C': 'Kar 98k',
