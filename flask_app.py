@@ -445,11 +445,11 @@ def event_match(player_name, event_type, data):
     if event_type and data_type != event_type:
         return False
     elif player_name:
-        if data_type == 'LogPlayerAttack' and data['Attacker']['Name'] != player_name:
+        if data_type == 'LogPlayerAttack' and data['attacker']['name'] != player_name:
             return False
-        elif data_type == 'LogPlayerPosition' and data['Character']['Name'] != player_name:
+        elif data_type == 'LogPlayerPosition' and data['character']['name'] != player_name:
             return False
-        elif data_type == 'LogPlayerTakeDamage' and data['Attacker']['Name'] != player_name:
+        elif data_type == 'LogPlayerTakeDamage' and data['attacker']['name'] != player_name:
             return False
     return True
 
@@ -469,8 +469,8 @@ def get_damage_by_player(match_key, player_name):
     total = 0
     weapons = {}
     for event in data:
-        damage = event['Damage']
-        weapon = event['DamageCauserName']
+        damage = event['damage']
+        weapon = event['damageCauserName']
         total += damage
         if weapon in weapons:
             weapons[weapon] += damage
@@ -506,14 +506,14 @@ def get_player_kills_by_weapon(player_name):
     weapons = {}
     result = []
     for event in data:
-        killer = event['Killer']['Name']
-        target = event['Victim']['Name']
+        killer = event['killer']['name']
+        target = event['victim']['name']
         if killer != player_name or target == player_name:
             continue
-        weapon = WEAPON_MAP.get(event['DamageCauserName'], event['DamageCauserName'])
+        weapon = WEAPON_MAP.get(event['damageCauserName'], event['damageCauserName'])
         if weapon in ['crap', 'Melee']:
             damage_events = get_match_telemetry(event['match_key'], player_name=player_name, event_type='LogPlayerTakeDamage')
-            weapon = find_murder_weapon(damage_events, event['Victim']['Name'])
+            weapon = find_murder_weapon(damage_events, event['victim']['name'])
         weapons[weapon] = weapons.get(weapon, 0) + 1
 
     for w_name, w_kills in weapons.items():
@@ -529,11 +529,11 @@ def get_kills(match_key, player_name):
     for detail_rec in match_details(match_key=match_key):
         match_date = datetime.strptime(detail_rec['json']['data']['attributes']['createdAt'], '%Y-%m-%dT%H:%M:%SZ')
     for event in kill_events:
-        killer = event['Killer']['Name']
-        target = event['Victim']['Name']
+        killer = event['killer']['name']
+        target = event['victim']['name']
         if killer != player_name or target == player_name:
             continue
-        weapon = WEAPON_MAP.get(event['DamageCauserName'], event['DamageCauserName'])
+        weapon = WEAPON_MAP.get(event['damageCauserName'], event['damageCauserName'])
         time_str = event["_D"][:19] + 'Z'
         kill_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ')
         time = kill_time - match_date
@@ -545,12 +545,12 @@ def get_kills(match_key, player_name):
 
 
 def find_murder_weapon(attack_events, target):
-    filtered_attacks = [d for d in attack_events if d['Victim']['Name'] == target]
+    filtered_attacks = [d for d in attack_events if d['victim']['name'] == target]
     sorted_attacks = sorted(filtered_attacks, key=itemgetter("_D"), reverse=True)
-    weapon = sorted_attacks[0]['DamageCauserName']
+    weapon = sorted_attacks[0]['damageCauserName']
     for attack in sorted_attacks:
-        if attack['Victim']['Health'] > 0:
-            weapon = attack['DamageCauserName']
+        if attack['victim']['health'] > 0:
+            weapon = attack['damageCauserName']
             break
     return WEAPON_MAP.get(weapon, weapon)
 
@@ -561,7 +561,7 @@ def get_damage_types():
     result = set()
 
     for event in data:
-        result.add(event['DamageReason'])
+        result.add(event['damageReason'])
 
     return jsonify(list(result))
 
@@ -588,9 +588,9 @@ def get_damage_caused(match_key):
                                                '%Y-%m-%dT%H:%M:%SZ')
             data = get_match_telemetry(match_key, player_name=player_name, event_type='LogPlayerTakeDamage')
             for event in data:
-                weapon = event['DamageCauserName']
+                weapon = event['damageCauserName']
                 event['weapon'] = WEAPON_MAP.get(weapon, weapon)
-                target = event['Victim']['Name']
+                target = event['victim']['name']
                 time_str = event["_D"][:19] + 'Z'
                 kill_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%SZ')
                 time = kill_time - match_date
@@ -601,7 +601,7 @@ def get_damage_caused(match_key):
                         'target': target, 'attacks': [], 'time': time.seconds, 'total_dmg': 0, 'killer': killer
                     }
                 player_dmg[target]['attacks'].append(event)
-                player_dmg[target]['total_dmg'] = player_dmg[target]['total_dmg'] + event['Damage']
+                player_dmg[target]['total_dmg'] = player_dmg[target]['total_dmg'] + event['damage']
 
             if 'dmg' not in result[player_name].keys():
                 result[player_name]['dmg'] = []
@@ -629,9 +629,9 @@ def get_dmg_by_loc():
         results[p] = {'hits': 0, 'shots': 0}
 
     for event in data:
-        attacker = event['Attacker']['Name']
-        shot_loc = event['DamageReason']
-        if event['DamageTypeCategory'] == "Damage_Gun" and event['Attacker']['Name'] in PLAYER_IDS.keys():
+        attacker = event['attacker']['name']
+        shot_loc = event['damageReason']
+        if event['damageTypeCategory'] == "Damage_Gun" and event['attacker']['name'] in PLAYER_IDS.keys():
             if shot_loc in results[attacker].keys():
                 results[attacker][shot_loc] += 1
             else:
@@ -640,9 +640,9 @@ def get_dmg_by_loc():
 
     data = get_match_telemetry(event_type='LogPlayerAttack')
     for event in data:
-        attacker = event['Attacker']['Name']
-        weapon = event['Weapon']['ItemId']
-        if event['AttackType'] == 'Weapon' and event['Attacker']['Name'] in PLAYER_IDS.keys():
+        attacker = event['attacker']['name']
+        weapon = event['weapon']['itemId']
+        if event['AttackType'] == 'weapon' and event['attacker']['name'] in PLAYER_IDS.keys():
             if weapon in [
                 "Item_Weapon_FlashBang_C",
                 "Item_Weapon_Grenade_C",
@@ -673,8 +673,8 @@ def get_repeat_kills():
     for rec in telemetry():
         for data in rec['json']:
             data_type = data['_T']
-            if data_type == 'LogPlayerKill' and data['Victim']['Name'] not in PLAYER_IDS.keys():
-                victim = data['Victim']['Name']
+            if data_type == 'LogPlayerKill' and data['victim']['name'] not in PLAYER_IDS.keys():
+                victim = data['victim']['name']
                 names[victim] = names.get(victim, 0) + 1
 
     sorted_names = sorted(names.items(), key=operator.itemgetter(1))
@@ -687,7 +687,7 @@ def get_repeat_kills_for_player(player_name):
     for rec in telemetry():
         for data in rec['json']:
             data_type = data['_T']
-            if data_type == 'LogPlayerKill' and data['Victim']['Name'] == player_name:
+            if data_type == 'LogPlayerKill' and data['victim']['name'] == player_name:
                 result.append(data)
 
     return jsonify(result)
