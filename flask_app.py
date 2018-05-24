@@ -40,8 +40,8 @@ WEAPON_MAP = {
     'WeapCowbar_C': 'Crowbar',
     'ProjMolotov_DamageField_C': 'Molotov',
     'Buff_FireDOT_C': 'Molotov',
+    'ProjMolotov_DamageFieldInWall_C': 'Molotov',
     'WeapPan_C': 'Pan',
-
 
     # ARs
     'WeapSCAR-L_C': 'SCAR-L',
@@ -602,6 +602,7 @@ def get_damage_caused(match_key):
                     }
                 player_dmg[target]['attacks'].append(event)
                 player_dmg[target]['total_dmg'] = player_dmg[target]['total_dmg'] + event['damage']
+                player_dmg[target]['time'] = time.seconds
 
             if 'dmg' not in result[player_name].keys():
                 result[player_name]['dmg'] = []
