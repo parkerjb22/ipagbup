@@ -69,6 +69,13 @@
             { 'name': 'Mirimar', 'selected': true },
         ]
 
+        vm.playerNames = [
+            'BigGoof20',
+            'Honkieharris',
+            'UCBananaboy',
+            'WTJ22'
+        ]
+
         vm.selectedLimit = vm.limits[0]
 
         vm.getStats = getStats
