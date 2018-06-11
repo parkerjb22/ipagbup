@@ -96,6 +96,11 @@ WEAPON_MAP = {
 
 }
 
+MAPS = {
+    'Erangel_Main': 'Erangel',
+    'Desert_Main': 'Mirimar'
+}
+
 DB_DIR = 'stats/db/'
 
 
@@ -129,14 +134,22 @@ seasons = create_seasons()
 telemetry = create_telemetry()
 
 
-def summarize(details, player_name=None, game_type=None, limit=None):
+def summarize(details, player_name=None, game_type=None, limit=None, map_names=None):
     rounds = []
     summary = []
     for rec in details:
-        if game_type is not None and rec['json']['data']['attributes']['gameMode'] != game_type:
+        attributes = rec['json']['data']['attributes']
+        if game_type is not None and attributes['gameMode'] != game_type:
             continue
+        if map_names is not None and len(map_names) > 0:
+            if 'mapName' not in attributes.keys():
+                if 'Erangel' not in map_names:
+                    continue
+            else:
+                if MAPS[attributes['mapName']] not in map_names:
+                    continue
         data_array = rec['json']['included']
-        date = rec['json']['data']['attributes']['createdAt']
+        date = attributes['createdAt']
         rounds.append({'data': data_array, 'date': date})
 
     sorted_rounds = sorted(rounds, key=lambda x: x['date'], reverse=True)
@@ -231,8 +244,9 @@ def get_stats():
 def get_player_stats(player_name):
     game_type = request.args.get('type')
     limit = request.args.get('limit')
-    summary = summarize(match_details(), player_name=player_name, game_type=game_type, limit=limit)
-    return jsonify(summary[0])
+    map_names = request.args.getlist('maps')
+    summary = summarize(match_details(), player_name=player_name, game_type=game_type, limit=limit, map_names=map_names)
+    return jsonify([]) if len(summary) == 0 else jsonify(summary[0])
 
 
 @app.route("/api/match/<match_id>")
@@ -254,8 +268,10 @@ def get_player(player_name):
         stats = {}
         team_count = 0
         for detail_rec in match_details(match_key=rec['match_key']):
-            date = detail_rec['json']['data']['attributes']['createdAt']
-            game_mode = detail_rec['json']['data']['attributes']['gameMode']
+            attributes = detail_rec['json']['data']['attributes']
+            date = attributes['createdAt']
+            game_mode = attributes['gameMode']
+            map_title = 'Erangel' if 'mapName' not in attributes.keys() else MAPS[attributes['mapName']]
         if date:
             for data in detail_rec['json']['included']:
                 if data['type'] == 'participant':
@@ -271,7 +287,8 @@ def get_player(player_name):
                     'date': date,
                     'stats': stats,
                     'teamCount': team_count,
-                    'gameMode': game_mode
+                    'gameMode': game_mode,
+                    'mapTitle': map_title
                 }
             )
 
