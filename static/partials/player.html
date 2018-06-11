@@ -168,6 +168,12 @@
                 <a ng-repeat="limit in vm.limits" class="dropdown-item" ng-click="vm.getStats(limit)">{{ limit.text }}</a>
             </div>
         </div>
+        <div class="row mt-2">
+            <div ng-repeat="map in vm.maps" class="col-sm-12">
+                <input type="checkbox" ng-model="map.selected" ng-click="vm.getStats(vm.selectedLimit)">
+                <label>{{ map.name }}</label>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row mt-3">

@@ -44,8 +44,8 @@
             return statsResource.query({type: type}).$promise
         }
 
-        function getPlayerStats(name, limit){
-            return statsResource.get({name: name, limit:limit}).$promise
+        function getPlayerStats(name, limit, maps){
+            return statsResource.get({name: name, limit:limit, maps:maps}).$promise
         }
 
         function getPlayerMatches(name) {

@@ -64,6 +64,11 @@
             { 'text':'Last 50', 'amount': 50},
         ]
 
+        vm.maps = [
+            { 'name': 'Erangel', 'selected': true },
+            { 'name': 'Mirimar', 'selected': true },
+        ]
+
         vm.selectedLimit = vm.limits[0]
 
         vm.getStats = getStats
@@ -101,7 +106,13 @@
         }
 
         function getStats(limit){
-            StatsService.getPlayerStats(vm.playerName, limit.amount).then(function(player){
+            var selectedMaps = []
+            for (var i=0; i<vm.maps.length; i++) {
+                if (vm.maps[i].selected){
+                    selectedMaps.push(vm.maps[i].name)
+                }
+            }
+            StatsService.getPlayerStats(vm.playerName, limit.amount, selectedMaps).then(function(player){
                 vm.player = player
                 vm.selectedLimit = limit
             })
