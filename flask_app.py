@@ -75,6 +75,7 @@ WEAPON_MAP = {
     'WeapM1911_C': 'M1911',
     'WeapNagantM1895_C': 'R1895',
     'WeapG18_C': 'G18',
+    'WeapRhino_C': 'Rhino',
 
     'WeapDP28_C': 'DP28',
     'WeapM249_C': 'M249',
@@ -83,6 +84,7 @@ WEAPON_MAP = {
     # Vehicles
     'Buggy_A_03_C': 'Buggy',
     'Buggy_A_02_C': 'Buggy',
+    'Buggy_A_05_C': 'Buggy',
     'Dacia_A_02_v2_C': 'Dacia',
     'Dacia_A_01_v2_C': 'Dacia',
     'Dacia_A_03_v2_C': 'Dacia',
@@ -92,9 +94,11 @@ WEAPON_MAP = {
     'Uaz_C_01_C': 'UAZ',
     'Uaz_B_01_C': 'UAZ',
     'BP_PickupTruck_A_03_C': 'Pickup Truck',
+    'BP_PickupTruck_A_01_C': 'Pickup Truck',
 
     'BattleRoyaleModeController_Def_C': 'crap',
-    'Buff_DecreaseBreathInApnea_C': 'crap'
+    'Buff_DecreaseBreathInApnea_C': 'crap',
+    'BattleRoyaleModeController_Desert_C ': 'crap'
 
 }
 
