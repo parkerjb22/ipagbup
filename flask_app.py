@@ -50,6 +50,7 @@ WEAPON_MAP = {
     'WeapM16A4_C': 'M16',
     'WeapGroza_C': 'Groza',
     'WeapAUG_C': 'AUG',
+    'WeapWin94_C': 'Win94',
 
     # Snipers
     'WeapKar98k_C': 'Kar 98k',
@@ -95,6 +96,7 @@ WEAPON_MAP = {
     'Uaz_B_01_C': 'UAZ',
     'BP_PickupTruck_A_03_C': 'Pickup Truck',
     'BP_PickupTruck_A_01_C': 'Pickup Truck',
+    'BP_PickupTruck_B_02_C': 'Pickup Truck',
 
     'BattleRoyaleModeController_Def_C': 'crap',
     'Buff_DecreaseBreathInApnea_C': 'crap',

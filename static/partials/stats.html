@@ -26,7 +26,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="player in vm.stats | orderBy:'-rounds'">
-                    <td><a href="#/player/{{ player.name }}">{{ player.name }}</a></td>
+                    <td><a href="#!/player/{{ player.name }}">{{ player.name }}</a></td>
                     <td>{{ player.rounds }}</td>
                     <td>{{ (player.rounds - player.deaths) }}</td>
                     <td>{{ ((player.rounds - player.deaths) / player.rounds * 100) | number:2 }}</td>
