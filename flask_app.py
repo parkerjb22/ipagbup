@@ -91,6 +91,7 @@ WEAPON_MAP = {
     'Dacia_A_03_v2_C': 'Dacia',
     'BP_Motorbike_04_C': 'Motorcycle',
     'BP_Motorbike_04_SideCar_C': 'Motorcycle',
+    'BP_Motorbike_04_SideCar_Desert_C': 'Motorcycle',
     'Uaz_A_01_C': 'UAZ',
     'Uaz_C_01_C': 'UAZ',
     'Uaz_B_01_C': 'UAZ',
@@ -100,7 +101,7 @@ WEAPON_MAP = {
 
     'BattleRoyaleModeController_Def_C': 'crap',
     'Buff_DecreaseBreathInApnea_C': 'crap',
-    'BattleRoyaleModeController_Desert_C ': 'crap'
+    'BattleRoyaleModeController_Desert_C': 'crap'
 
 }
 
