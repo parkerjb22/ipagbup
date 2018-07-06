@@ -59,6 +59,7 @@ WEAPON_MAP = {
     'WeapVSS_C': 'VSS',
     'WeapM24_C': 'M24',
     'WeapMK14_C': 'MK14',
+    'WeapAWM_C': 'AWM',
 
     # SMGs
     'WeapThompson_C': 'Thompson',
@@ -98,6 +99,7 @@ WEAPON_MAP = {
     'BP_PickupTruck_A_03_C': 'Pickup Truck',
     'BP_PickupTruck_A_01_C': 'Pickup Truck',
     'BP_PickupTruck_B_02_C': 'Pickup Truck',
+    'BP_PickupTruck_B_05_C': 'Pickup Truck',
 
     'BattleRoyaleModeController_Def_C': 'crap',
     'Buff_DecreaseBreathInApnea_C': 'crap',
