@@ -8,6 +8,8 @@ from operator import itemgetter
 
 app = Flask(__name__)
 
+BASE_DIR = 'stats/'
+
 DAN = 'BigGoof20'
 ALEX = 'UCBananaboy'
 JASON = 'Honkieharris'
@@ -31,110 +33,35 @@ PLAYER_NAMES = {}
 for k, v in PLAYER_IDS.items():
     PLAYER_NAMES[v] = k
 
-WEAPON_MAP = {
-
-    # Misc
-    'PlayerMale_A_C': 'Melee',
-    'PlayerFemale_A_C': 'Melee',
-    'ProjGrenade_C': 'Grenade',
-    'WeapCowbar_C': 'Crowbar',
-    'ProjMolotov_DamageField_C': 'Molotov',
-    'Buff_FireDOT_C': 'Molotov',
-    'ProjMolotov_DamageFieldInWall_C': 'Molotov',
-    'WeapPan_C': 'Pan',
-
-    # ARs
-    'WeapSCAR-L_C': 'SCAR-L',
-    'WeapHK416_C': 'M4',
-    'WeapAK47_C': 'AK47',
-    'WeapM16A4_C': 'M16',
-    'WeapGroza_C': 'Groza',
-    'WeapAUG_C': 'AUG',
-    'WeapWin94_C': 'Win94',
-
-    # Snipers
-    'WeapKar98k_C': 'Kar 98k',
-    'WeapSKS_C': 'SKS',
-    'WeapMini14_C': 'Mini 14',
-    'WeapVSS_C': 'VSS',
-    'WeapM24_C': 'M24',
-    'WeapMK14_C': 'MK14',
-    'WeapAWM_C': 'AWM',
-
-    # SMGs
-    'WeapThompson_C': 'Thompson',
-    'WeapUMP_C': 'UMP',
-    'WeapVector_C': 'Vector',
-    'WeapUZI_C': 'Micro Uzi',
-
-    # Shotguns
-    'WeapBerreta686_C': 'S686',
-    'WeapWinchester_C': 'S1987',
-    'WeapSaiga12_C': 'S12k',
-
-    # Pistols
-    'WeapM9_C': 'M9',
-    'WeapM1911_C': 'M1911',
-    'WeapNagantM1895_C': 'R1895',
-    'WeapG18_C': 'G18',
-    'WeapRhino_C': 'Rhino',
-
-    'WeapDP28_C': 'DP28',
-    'WeapM249_C': 'M249',
-    'WeapCrossbow_1_C': 'Crossbow',
-
-    # Vehicles
-    'Buggy_A_03_C': 'Buggy',
-    'Buggy_A_02_C': 'Buggy',
-    'Buggy_A_05_C': 'Buggy',
-    'Dacia_A_02_v2_C': 'Dacia',
-    'Dacia_A_01_v2_C': 'Dacia',
-    'Dacia_A_03_v2_C': 'Dacia',
-    'BP_Motorbike_04_C': 'Motorcycle',
-    'BP_Motorbike_04_SideCar_C': 'Motorcycle',
-    'BP_Motorbike_04_SideCar_Desert_C': 'Motorcycle',
-    'Uaz_A_01_C': 'UAZ',
-    'Uaz_C_01_C': 'UAZ',
-    'Uaz_B_01_C': 'UAZ',
-    'BP_PickupTruck_A_03_C': 'Pickup Truck',
-    'BP_PickupTruck_A_01_C': 'Pickup Truck',
-    'BP_PickupTruck_B_02_C': 'Pickup Truck',
-    'BP_PickupTruck_B_05_C': 'Pickup Truck',
-
-    'BattleRoyaleModeController_Def_C': 'crap',
-    'Buff_DecreaseBreathInApnea_C': 'crap',
-    'BattleRoyaleModeController_Desert_C': 'crap'
-
-}
+with open(BASE_DIR + 'weap_map.txt', 'r') as f:
+    WEAPON_MAP = json.loads(f.read())
 
 MAPS = {
     'Erangel_Main': 'Erangel',
     'Desert_Main': 'Mirimar'
 }
 
-DB_DIR = 'stats/db/'
-
 
 def create_matches():
-    db = Base(DB_DIR + 'matches.pdl', save_to_file=True)
+    db = Base(BASE_DIR + 'db/matches.pdl', save_to_file=True)
     db.create('match_key', 'player_id', mode="open")
     return db
 
 
 def create_match_details():
-    db = Base(DB_DIR + 'match_details.pdl', save_to_file=True)
+    db = Base(BASE_DIR + 'db/match_details.pdl', save_to_file=True)
     db.create('match_key', 'json', mode="open")
     return db
 
 
 def create_seasons():
-    db = Base(DB_DIR + 'seasons.pdl', save_to_file=True)
+    db = Base(BASE_DIR + 'db/seasons.pdl', save_to_file=True)
     db.create('player_id', 'season_id', 'json', mode="open")
     return db
 
 
 def create_telemetry():
-    db = Base(DB_DIR + 'telemetry.pdl', save_to_file=True)
+    db = Base(BASE_DIR + 'db/telemetry.pdl', save_to_file=True)
     db.create('match_key', 'json', mode="open")
     return db
 
