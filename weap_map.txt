@@ -19,6 +19,7 @@
     "WeapMini14_C": "Mini 14",
     "WeapVSS_C": "VSS",
     "WeapM24_C": "M24",
+    "WeapMk14_C": "Mk14",
     "WeapFNFal_C": "SLR",
     "WeapMK14_C": "MK14",
     "WeapAWM_C": "AWM",
