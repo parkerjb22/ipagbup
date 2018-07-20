@@ -19,6 +19,7 @@
     "WeapMini14_C": "Mini 14",
     "WeapVSS_C": "VSS",
     "WeapM24_C": "M24",
+    "WeapFNFal_C": "SLR",
     "WeapMK14_C": "MK14",
     "WeapAWM_C": "AWM",
     "WeapThompson_C": "Thompson",
@@ -57,8 +58,10 @@
     "BP_PickupTruck_B_02_C": "Pickup Truck",
     "BP_PickupTruck_B_03_C": "Pickup Truck",
     "BP_PickupTruck_A_04_C": "Pickup Truck",
+    "BP_PickupTruck_B_04_C": "Pickup Truck",
     "BP_PickupTruck_B_05_C": "Pickup Truck",
     "BattleRoyaleModeController_Def_C": "crap",
     "Buff_DecreaseBreathInApnea_C": "crap",
     "BattleRoyaleModeController_Desert_C": "crap"
+    "RedZoneBomb_C": "crap",
 }
