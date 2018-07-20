@@ -62,6 +62,6 @@
     "BP_PickupTruck_B_05_C": "Pickup Truck",
     "BattleRoyaleModeController_Def_C": "crap",
     "Buff_DecreaseBreathInApnea_C": "crap",
-    "BattleRoyaleModeController_Desert_C": "crap"
     "RedZoneBomb_C": "crap",
+    "BattleRoyaleModeController_Desert_C": "crap"
 }
